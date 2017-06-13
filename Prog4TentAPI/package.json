@@ -1,0 +1,17 @@
+{
+  "name": "prog4tentapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3",
+    "mysql": "^2.13.0",
+    "nodemon": "^1.11.0",
+    "router": "^1.3.1"
+  }
+}
