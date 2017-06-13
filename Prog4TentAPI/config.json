@@ -1,0 +1,14 @@
+/**
+ * Created by Mika Krooswijk on 13-6-2017.
+ */
+{
+  "secretkey" : "9588a024ffedf1ab2d3fd4b0bcfe3810a7c8b1f5a0417495d8911ab678be9172",
+  "WebPort": "8080",
+  "server": "localhost",
+  "password": "DEGnMLR7QSXRutJR",
+  "username": "WorldAdmin",
+  "dbname": "world",
+  "dbuser" : "user"
+
+}
+
