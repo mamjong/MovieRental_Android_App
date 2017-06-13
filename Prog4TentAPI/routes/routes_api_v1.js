@@ -1,11 +1,3 @@
-/**
- * Created by Mika Krooswijk on 13-6-2017.
- */
-
-/**
- * Created by Koen on 11-5-2017.
- */
-
 // API version 1
 var express = require('express');
 var router = express.Router();
@@ -51,7 +43,7 @@ function decodeToken(token, cb) {
     }
 }
 
-router.post('/login', function(req, res, next) {
+router.post('/login', function(req, res) {
 
     var username = req.body.username || '';
     var password = req.body.password || '';
