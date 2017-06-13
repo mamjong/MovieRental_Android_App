@@ -1,7 +1,8 @@
 {
   "name": "prog4tentapi",
   "version": "1.0.0",
-  "description": "",
+  "private": true,
+  "description": "Tentamen Programmeren 4",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
