@@ -66,7 +66,7 @@ router.post('/login', function(req, res) {
                     if (rows[0].hasOwnProperty('username') && rows[0].hasOwnProperty('password')) {
                         var hash = rows[0].password;
                         if (bcrypt.compareSync(password, hash)){
-                            res.status(200).json({"token" :encodeToken(username)});
+                            res.status(200).json({"token" : encodeToken(username)});
                         } else {
                             res.json({error:"Invalid password"});
                         }
@@ -111,9 +111,21 @@ router.post('/register', function(req, res, next){
             res.status(200).json(rows);
         });
     });
-
 });
 
+router.get('/rentals/:customerId', function(req, res) {
+    var customerId = req.params.customerId;
+    var query = 'SELECT * FROM rental WHERE customer_id = ' + customerId + ';'
+
+    pool.getConnection(function (err, connection) {
+        if (err) {throw err}
+        connection.query(query, function (err, rows, fields) {
+            connection.release();
+            if (err) {throw err}
+            res.status(200).json(rows)
+        })
+    })
+});
 
 
 
@@ -124,7 +136,7 @@ router.get('/films', function (req, res) {
 
     console.log(offset + count);
 
-    var query = 'SELECT *FROM film ORDER BY film_id LIMIT ' + count + ' OFFSET ' + offset + ';';
+    var query = 'SELECT * FROM film ORDER BY film_id LIMIT ' + count + ' OFFSET ' + offset + ';';
 
     pool.getConnection((function (err, connection) {
         if(err){
@@ -160,10 +172,6 @@ router.get('/filmid/:filmid', function (req, res) {
     }));
 });
 
-
-
-
-
 router.all('*', function(req, res, next) {
     var token = (req.header('X-Access-Token')) || '';
 
@@ -175,6 +183,61 @@ router.all('*', function(req, res, next) {
             next();
         }
     });
+});
+
+router.post('/rentals/:customerId/:inventoryId', function (req, res) {
+    var customerId = req.params.customerId;
+    var inventoryId = req.params.inventoryId;
+
+    var rentalDate = req.body.RentalDate;
+    var returnDate = req.body.ReturnDate;
+    var staffId = req.body.StaffId;
+
+    var query = {
+        sql : 'INSERT INTO `rental`(rental_date, inventory_id, customer_id, return_date, staff_id) VALUES (?, ?, ?, ?, ?)',
+        values : [rentalDate, inventoryId, customerId, returnDate, staffId],
+        timeout : 2000
+    };
+    res.contentType("application/json");
+
+    pool.getConnection(function (err, connection) {
+        if (err) {throw err}
+        connection.query(query, function (err, rows, fields) {
+            connection.release();
+            if (err) {throw err}
+            res.status(200).json(rows);
+        })
+    })
+});
+
+router.put('/rentals/:customerId/:inventoryId', function (req, res) {
+    var customerId = req.params.customerId;
+    var inventoryId = req.params.inventoryId;
+
+    var rentalDate = req.body.RentalDate;
+    var returnDate = req.body.ReturnDate;
+    var staffId = req.body.StaffId;
+
+    var query = {
+        sql: 'UPDATE `rental` SET rental_date = ?, return_date = ?, staff_id = ? ' +
+        'WHERE customer_id = ' + customerId + ' AND inventory_id = ' + inventoryId + ';',
+        values: [rentalDate, returnDate, staffId],
+        timeout: 2000
+    };
+    res.contentType("application/json");
+
+    pool.getConnection(function (err, connection) {
+        if (err) {
+            throw err
+        }
+        connection.query(query, function (err, rows, fields) {
+            connection.release();
+            if (err) {
+                throw err
+            }
+            res.status(200).json(rows);
+        })
+    })
 });
 
 router.delete('/rental', function (req, res) {
