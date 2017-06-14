@@ -111,14 +111,23 @@ router.post('/register', function(req, res, next){
             res.status(200).json(rows);
         });
     });
-
 });
 
+router.get('/rentals/:customerId', function(req, res) {
+    var customerId = req.params.customerId;
+    var query = 'SELECT * FROM rental WHERE customer_id = ' + customerId + ';'
 
+    pool.getConnection(function (err, connection) {
+        if (err) {throw err}
+        connection.query(query, function (err, rows, fields) {
+            connection.release();
+            if (err) {throw err}
+            res.status(200).json(rows)
+        })
+    })
+})
 
-
-
-router.get('*', function(request, response) {
+router.get('*', function(req, res, next) {
     var token = (req.header('X-Access-Token')) || '';
 
     decodeToken(token, function (err, payload) {
@@ -130,5 +139,18 @@ router.get('*', function(request, response) {
         }
     });
 });
+
+router.post('/rentals/:customerId/:inventoryId', function (req, res) {
+    var customerId = req.params.customerId;
+    var inventoryId = req.params.inventoryId;
+
+    var rentalDate = req.body.RentalDate;
+    var returnDate = req.body.ReturnDate;
+    var staffId = req.body.StaffId;
+
+    var query = {
+        sql : 'INSERT INTO `'
+    }
+})
 
 module.exports = router;
