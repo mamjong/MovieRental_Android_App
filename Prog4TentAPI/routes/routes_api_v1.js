@@ -177,6 +177,27 @@ router.get('*', function(req, res, next) {
     });
 });
 
+router.delete('/rental', function (req, res) {
+    var customerid = req.query.customerid || "";
+    var invenrotyid = req.query.invenrotyid || "";
 
+
+
+
+
+    var query = "DELETE FROM `rental` WHERE customer_id = " + customerid + " AND inventory_id = " + invenrotyid +" ;";
+
+    pool.getConnection((function (err, connection) {
+        if(err){
+            throw err
+        }connection.query(query, function (err, rows, fields) {
+            connection.release();
+            if(err){
+                throw err
+            }
+            res.status(200).json(rows);
+        });
+    }));
+});
 
 module.exports = router;
