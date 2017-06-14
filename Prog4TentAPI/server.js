@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-var config = require('./config.json');
+var config = require('./config');
 var http = require('http');
 
 app.set('PORT', config.webPort);

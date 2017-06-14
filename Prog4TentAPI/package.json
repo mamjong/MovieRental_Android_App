@@ -1,7 +1,8 @@
 {
   "name": "prog4tentapi",
   "version": "1.0.0",
-  "description": "",
+  "private": true,
+  "description": "Tentamen Programmeren 4",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^1.0.2",
+    "body-parser": "^1.17.2",
     "express": "^4.15.3",
+    "jwt-simple": "^0.5.1",
+    "moment": "^2.18.1",
     "mysql": "^2.13.0",
     "nodemon": "^1.11.0",
     "router": "^1.3.1"
