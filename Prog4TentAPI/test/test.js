@@ -90,7 +90,7 @@ describe('delete rental', function() {
     before(function (done) {
         chai.request(server)
             .post("/api/v1/login")
-            .send({"username":"username", "password" : "password"})
+            .send({"username": "Mark", "password" : "12345"})
             .end(function (err, res) {
                 var result = JSON.parse(res.text);
                 token = result.token;
