@@ -119,9 +119,15 @@ router.post('/register', function(req, res, next){
 
 
 router.get('*', function(request, response) {
-    response.status(200);
-    response.json({
-        "description": "API V1"
+    var token = (req.header('X-Access-Token')) || '';
+
+    decodeToken(token, function (err, payload) {
+        if (err) {
+            console.log('Error handler: ' + err.message);
+            res.status((err.status || 401 )).json({error: new Error("Not authorised").message});
+        } else {
+            next();
+        }
     });
 });
 
