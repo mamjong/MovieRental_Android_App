@@ -1,11 +1,6 @@
-/**
- * Created by Mika Krooswijk on 13-6-2017.
- */
-
-
 var express = require('express');
 var app = express();
-var config = require('./config.json');
+var config = require('./config');
 var http = require('http');
 
 app.set('PORT', config.webPort);

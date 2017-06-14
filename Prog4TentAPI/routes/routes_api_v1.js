@@ -1,11 +1,3 @@
-/**
- * Created by Mika Krooswijk on 13-6-2017.
- */
-
-/**
- * Created by Koen on 11-5-2017.
- */
-
 // API version 1
 var express = require('express');
 var router = express.Router();
@@ -51,13 +43,14 @@ function decodeToken(token, cb) {
     }
 }
 
-router.post('/login', function(req, res, next) {
+router.post('/login', function(req, res) {
 
     var username = req.body.username || '';
     var password = req.body.password || '';
 
     if (username && password) {
-        query_str = 'SELECT * FROM users WHERE username = "' + username + '";';
+        query_str = 'SELECT * FROM customer WHERE username = "' + username + '";';
+
 
         pool.getConnection(function (err, connection) {
             if (err) {
@@ -92,19 +85,6 @@ router.post('/login', function(req, res, next) {
 
 });
 
-router.all(new RegExp("[^\/login)]"), function (req, res, next) {
-    var token = (req.header('X-Access-Token')) || '';
-
-    decodeToken(token, function (err, payload) {
-        if (err) {
-            console.log('Error handler: ' + err.message);
-            res.status((err.status || 401 )).json({error: new Error("Not authorised").message});
-        } else {
-            next();
-        }
-    });
-});
-
 router.post('/register', function(req, res, next){
     var username = req.body.username;
     var password = req.body.password;
@@ -112,8 +92,10 @@ router.post('/register', function(req, res, next){
     var hash = bcrypt.hashSync(password, 10);
 
     var query_str = {
-        sql: 'INSERT INTO `users`(username, password) VALUES (?,?)',
+
+        sql: 'INSERT INTO `customer`(username, password) VALUES (?,?)',
         values: [username, hash],
+
         timeout: 2000
     };
 
@@ -134,10 +116,18 @@ router.post('/register', function(req, res, next){
 
 
 
+
+
 router.get('*', function(request, response) {
-    response.status(200);
-    response.json({
-        "description": "API V1"
+    var token = (req.header('X-Access-Token')) || '';
+
+    decodeToken(token, function (err, payload) {
+        if (err) {
+            console.log('Error handler: ' + err.message);
+            res.status((err.status || 401 )).json({error: new Error("Not authorised").message});
+        } else {
+            next();
+        }
     });
 });
 
