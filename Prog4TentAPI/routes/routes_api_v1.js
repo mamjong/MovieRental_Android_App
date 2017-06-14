@@ -214,16 +214,14 @@ router.put('/rentals/:customerId/:inventoryId', function (req, res) {
     var customerId = req.params.customerId;
     var inventoryId = req.params.inventoryId;
 
-    var customerIdBody = req.body.CustomerId;
-    var inventoryIdBody = req.body.InventoryId;
     var rentalDate = req.body.RentalDate;
     var returnDate = req.body.ReturnDate;
     var staffId = req.body.StaffId;
 
     var query = {
-        sql: 'UPDATE `rental` SET rental_date = ?, inventory_id = ?, customer_id = ?, return_date = ?, staff_id = ? ' +
+        sql: 'UPDATE `rental` SET rental_date = ?, return_date = ?, staff_id = ? ' +
         'WHERE customer_id = ' + customerId + ' AND inventory_id = ' + inventoryId + ';',
-        values: [rentalDate, inventoryIdBody, customerIdBody, returnDate, staffId],
+        values: [rentalDate, returnDate, staffId],
         timeout: 2000
     };
     res.contentType("application/json");

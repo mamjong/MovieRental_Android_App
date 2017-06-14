@@ -7,11 +7,26 @@ var moment = require('moment');
 
 chai.use(chaiHttp);
 
+var token = "";
+var now = moment().format("YYYY-MM-DD HH:MM:SS");
+
 describe('film request', function () {
     it('Test GET /api/v1/films', function (done) {
         chai.request(server)
             .get('/api/v1/films?offset=20&count=10')
             .end(function (err, res) {
+                res.should.have.status(200);
+                res.body.should.be.a('array');
+                done();
+            });
+    });
+});
+
+describe('film request', function() {
+    it('Test GET /api/v1/films', function(done) {
+        chai.request(server)
+            .get('/api/v1/filmid/1')
+            .end(function(err, res) {
                 res.should.have.status(200);
                 res.body.should.be.a('array');
                 done();
@@ -31,11 +46,9 @@ describe('rental request', function () {
     });
 });
 
-var now = moment().format("YYYY-MM-DD HH:MM:SS");
-
 describe('rental POST', function () {
     var token = "";
-    before(function () {
+    before(function (done) {
         chai.request(server)
             .post('/api/v1/login')
             .send({"username": "Mark", "password": "12345"})
@@ -48,9 +61,9 @@ describe('rental POST', function () {
     });
     it('Test POST /api/v1/rentals/:customerId/:inventoryId', function (done) {
         chai.request(server)
-            .post('/api/v1/rentals/2/10')
-            .set("X-Access-Token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0OTgzMTU0MDIsImlhdCI6MTQ5NzQ1MTQwMiwic3ViIjoiTWFyayJ9.CoFN01eiR65XDwE9yoI-2FcwJdXkBqDEetBxHs_rcc4")
-            .send({"RentalDate": now, "ReturnDate": "2005-06-25 22:53:30", "StaffId": "5"})
+            .post('/api/v1/rentals/3/10')
+            .set("X-Access-Token", token)
+            .send({"RentalDate": now, "ReturnDate": "2019-08-19 22:53:30", "StaffId": "15"})
             .end(function (err, res) {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
@@ -60,33 +73,31 @@ describe('rental POST', function () {
 });
 
 describe('rental PUT', function () {
-    it('Test PUT /api/v1/rentals/:customerId/:inventoryId', function (done) {
+    before(function (done) {
         chai.request(server)
-            .get('/api/v1/rentals/2/3')
+            .post('/api/v1/login')
+            .send({"username": "Mark", "password": "12345"})
             .end(function (err, res) {
-                res.should.have.status(200);
-                res.body.should.be.a('array');
+                var result = JSON.parse(res.text);
+                token = result.token;
+                console.log(token);
                 done();
             });
     });
-});
-
-var token = "";
-
-describe('film request', function() {
-    it('Test GET /api/v1/films', function(done) {
+    it('Test PUT /api/v1/rentals/:customerId/:inventoryId', function (done) {
         chai.request(server)
-            .get('/api/v1/filmid/1')
-            .end(function(err, res) {
+            .put('/api/v1/rentals/3/20')
+            .set("X-Access-Token", token)
+            .send({ "RentalDate" : now, "ReturnDate" : "2020-06-24 22:59:23", "StaffId" : "20" })
+            .end(function (err, res) {
                 res.should.have.status(200);
-                res.body.should.be.a('array');
+                res.body.should.be.a('object');
                 done();
             });
     });
 });
 
 describe('delete rental', function() {
-
     before(function (done) {
         chai.request(server)
             .post("/api/v1/login")
@@ -97,11 +108,9 @@ describe('delete rental', function() {
                 done();
             });
     });
-
-
     it('test DELETE/api/v1/rental', function(done) {
         chai.request(server)
-            .delete('/api/v1/rental?customerid=408&inventoryid=1711')
+            .delete('/api/v1/rental?customerid=3&inventoryid=10')
             .set("X-Access-Token", token)
             .end(function(err, res) {
                 res.should.have.status(200);
