@@ -115,6 +115,9 @@ router.post('/register', function(req, res, next){
 });
 
 
+
+
+
 router.get('/films', function (req, res) {
     var offset = req.query.offset || "";
     var count = req.query.count || "";
@@ -122,6 +125,27 @@ router.get('/films', function (req, res) {
     console.log(offset + count);
 
     var query = 'SELECT *FROM film ORDER BY film_id LIMIT ' + count + ' OFFSET ' + offset + ';';
+
+    pool.getConnection((function (err, connection) {
+        if(err){
+            throw err
+        }connection.query(query, function (err, rows, fields) {
+            connection.release();
+            if(err){
+                throw err
+            }
+            res.status(200).json(rows);
+        });
+    }));
+});
+
+router.get('/filmid/:filmid', function (req, res) {
+    var filmid = req.params.filmid || "";
+
+
+
+
+    var query = "SELECT * FROM `view_rental` WHERE film_id = " + filmid + ";" ;
 
     pool.getConnection((function (err, connection) {
         if(err){

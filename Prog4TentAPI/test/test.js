@@ -20,3 +20,16 @@ describe('film request', function() {
             });
     });
 });
+
+describe('film request', function() {
+    it('Test GET /api/v1/films', function(done) {
+        chai.request(server)
+            .get('/api/v1/filmid/1')
+            .end(function(err, res) {
+                res.should.have.status(200);
+                res.body.should.be.a('array');
+                done();
+            });
+    });
+});
+
