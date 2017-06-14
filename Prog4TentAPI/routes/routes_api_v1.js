@@ -125,7 +125,28 @@ router.get('/rentals/:customerId', function(req, res) {
             res.status(200).json(rows)
         })
     })
-})
+});
+
+router.get('/films', function (req, res) {
+    var offset = req.query.offset || "";
+    var count = req.query.count || "";
+
+    console.log(offset + count);
+
+    var query = 'SELECT *FROM film ORDER BY film_id LIMIT ' + count + ' OFFSET ' + offset + ';';
+
+    pool.getConnection((function (err, connection) {
+        if(err){
+            throw err
+        }connection.query(query, function (err, rows, fields) {
+            connection.release();
+            if(err){
+                throw err
+            }
+            res.status(200).json(rows);
+        });
+    }));
+});
 
 router.get('*', function(req, res, next) {
     var token = (req.header('X-Access-Token')) || '';
@@ -151,6 +172,6 @@ router.post('/rentals/:customerId/:inventoryId', function (req, res) {
     var query = {
         sql : 'INSERT INTO `'
     }
-})
+});
 
 module.exports = router;
