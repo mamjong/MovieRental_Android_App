@@ -13,11 +13,11 @@ var path = require('path');
 var pool = require('../db/db_connector');
 var config = require('../config.json');
 
-function encodeToken(email) {
+function encodeToken(username) {
     const payload = {
         exp: moment().add(10, 'days').unix(),
         iat: moment().unix(),
-        sub: email
+        sub: username
     };
     return jwt.encode(payload, config.secretkey);
 }
@@ -45,11 +45,11 @@ function decodeToken(token, cb) {
 
 router.post('/login', function(req, res) {
 
-    var email = req.body.email || '';
+    var username = req.body.username || '';
     var password = req.body.password || '';
 
-    if (email && password) {
-        query_str = 'SELECT * FROM users WHERE username = "' + email + '";';
+    if (username && password) {
+        query_str = 'SELECT * FROM customer WHERE username = "' + username + '";';
 
         pool.getConnection(function (err, connection) {
             if (err) {
@@ -62,50 +62,37 @@ router.post('/login', function(req, res) {
                 }
 
                 if (rows[0]) {
-                    if (rows[0].hasOwnProperty('email') && rows[0].hasOwnProperty('password')) {
+                    if (rows[0].hasOwnProperty('username') && rows[0].hasOwnProperty('password')) {
                         var hash = rows[0].password;
                         if (bcrypt.compareSync(password, hash)){
-                            res.status(200).json(encodeToken(email));
+                            res.status(200).json(encodeToken(username));
                         } else {
                             res.json({error:"Invalid password"});
                         }
                     } else {
-                        res.json({error: "Please enter a valid email and password"});
+                        res.json({error: "Please enter a valid username and password"});
                     }
                 } else {
-                    res.json({error: "Please enter a valid email and password"});
+                    res.json({error: "Please enter a valid username and password"});
                 }
 
             });
         });
     } else {
-        res.json({error: "Please enter a valid email and password"});
+        res.json({error: "Please enter a valid username and password"});
     }
 
 });
 
-router.all(new RegExp("[^\/login)]"), function (req, res, next) {
-    var token = (req.header('X-Access-Token')) || '';
-
-    decodeToken(token, function (err, payload) {
-        if (err) {
-            console.log('Error handler: ' + err.message);
-            res.status((err.status || 401 )).json({error: new Error("Not authorised").message});
-        } else {
-            next();
-        }
-    });
-});
-
 router.post('/register', function(req, res, next){
-    var email = req.body.email;
+    var username = req.body.username;
     var password = req.body.password;
 
     var hash = bcrypt.hashSync(password, 10);
 
     var query_str = {
-        sql: 'INSERT INTO `users`(username, password) VALUES (?,?)',
-        values: [email, hash],
+        sql: 'INSERT INTO `customer`(username, password) VALUES (?,?)',
+        values: [username, hash],
         timeout: 2000
     };
 
@@ -123,6 +110,8 @@ router.post('/register', function(req, res, next){
     });
 
 });
+
+
 
 
 
