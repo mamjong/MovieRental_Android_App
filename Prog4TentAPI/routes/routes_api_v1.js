@@ -51,6 +51,7 @@ router.post('/login', function(req, res) {
     if (username && password) {
         query_str = 'SELECT * FROM customer WHERE username = "' + username + '";';
 
+
         pool.getConnection(function (err, connection) {
             if (err) {
                 throw err
@@ -91,8 +92,10 @@ router.post('/register', function(req, res, next){
     var hash = bcrypt.hashSync(password, 10);
 
     var query_str = {
+
         sql: 'INSERT INTO `customer`(username, password) VALUES (?,?)',
         values: [username, hash],
+
         timeout: 2000
     };
 
