@@ -66,7 +66,7 @@ router.post('/login', function(req, res) {
                     if (rows[0].hasOwnProperty('username') && rows[0].hasOwnProperty('password')) {
                         var hash = rows[0].password;
                         if (bcrypt.compareSync(password, hash)){
-                            res.status(200).json(encodeToken(username));
+                            res.status(200).json({"token" :encodeToken(username)});
                         } else {
                             res.json({error:"Invalid password"});
                         }
@@ -164,7 +164,7 @@ router.get('/filmid/:filmid', function (req, res) {
 
 
 
-router.get('*', function(req, res, next) {
+router.all('*', function(req, res, next) {
     var token = (req.header('X-Access-Token')) || '';
 
     decodeToken(token, function (err, payload) {
@@ -179,13 +179,9 @@ router.get('*', function(req, res, next) {
 
 router.delete('/rental', function (req, res) {
     var customerid = req.query.customerid || "";
-    var invenrotyid = req.query.invenrotyid || "";
+    var inventoryid = req.query.inventoryid || "";
 
-
-
-
-
-    var query = "DELETE FROM `rental` WHERE customer_id = " + customerid + " AND inventory_id = " + invenrotyid +" ;";
+    var query = "DELETE FROM rental WHERE customer_id = " + customerid + " AND inventory_id = " + inventoryid +" ;";
 
     pool.getConnection((function (err, connection) {
         if(err){
