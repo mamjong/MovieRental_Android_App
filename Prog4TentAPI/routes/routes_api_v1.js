@@ -116,8 +116,8 @@ router.post('/register', function(req, res, next){
 
 
 router.get('/films', function (req, res) {
-    var count = req.query.offset || "";
-    var offset = req.query.count || "";
+    var offset = req.query.offset || "";
+    var count = req.query.count || "";
 
     console.log(offset + count);
 
