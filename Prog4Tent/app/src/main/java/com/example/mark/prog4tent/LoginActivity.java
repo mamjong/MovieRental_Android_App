@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -19,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -28,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText usernameText, passwordText;
     private Button loginBtn;
+    private TextView registerTextView;
     
 
     public static final String PREFS_NAME_TOKEN = "Prefsfile";
@@ -40,6 +43,15 @@ public class LoginActivity extends AppCompatActivity {
 
         editor = getSharedPreferences(PREFS_NAME_TOKEN, MODE_PRIVATE).edit();
 
+
+        registerTextView = (TextView) findViewById(R.id.login_tv_register);
+        registerTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
+                startActivity(i);
+            }
+        });
 
         usernameText = (EditText) findViewById(R.id.login_et_username);
         passwordText = (EditText) findViewById(R.id.login_et_password);
