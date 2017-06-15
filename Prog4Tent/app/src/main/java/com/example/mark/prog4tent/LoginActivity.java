@@ -1,5 +1,7 @@
 package com.example.mark.prog4tent;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,27 +17,38 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText emailText, passwordText;
+    private EditText usernameText, passwordText;
     private Button loginBtn;
+    
+
+    public static final String PREFS_NAME_TOKEN = "Prefsfile";
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        emailText = (EditText) findViewById(R.id.login_et_email);
+        editor = getSharedPreferences(PREFS_NAME_TOKEN, MODE_PRIVATE).edit();
+
+
+        usernameText = (EditText) findViewById(R.id.login_et_username);
         passwordText = (EditText) findViewById(R.id.login_et_password);
         loginBtn = (Button) findViewById(R.id.login_btn_login);
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                volleyLogin(usernameText.getText().toString(), passwordText.getText().toString());
             }
         });
     }
@@ -47,12 +60,26 @@ public class LoginActivity extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        String url = "url here...";
+        String url = "http://145.49.21.149:8080/api/v1/login";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        if (!response.contains("error") && !response.isEmpty()){
+                            String token = "no token found";
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                token = jsonObject.getString("token");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            editor.putString("TOKEN", token);
+                            editor.commit();
+                        } else {
+                            Log.e("ERROR", "Response: " + response);
+                        }
                     }
                 },
 

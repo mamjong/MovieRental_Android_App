@@ -110,11 +110,14 @@ describe('delete rental', function() {
     });
     it('test DELETE/api/v1/rental', function(done) {
         chai.request(server)
-            .delete('/api/v1/rental?customerid=3&inventoryid=10')
+            .delete('/api/v1/rental?customerId=3&inventoryId=10')
             .set("X-Access-Token", token)
             .end(function(err, res) {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
+                res.body.should.be.a('object');
+                res.body.should.have.property('affectedRows');
+                res.body.should.have.property('affectedRows', 1);
                 done();
             });
     });
