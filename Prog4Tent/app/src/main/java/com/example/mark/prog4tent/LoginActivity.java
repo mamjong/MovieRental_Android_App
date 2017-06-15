@@ -80,14 +80,17 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         if (!response.contains("error") && !response.isEmpty()){
                             String token = "no token found";
+                            String id = "no id found";
                             try {
                                 JSONObject jsonObject = new JSONObject(response);
                                 token = jsonObject.getString("token");
+                                id = jsonObject.getString("id");
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
                             editor.putString("TOKEN", token);
+                            editor.putString("ID", id);
                             editor.commit();
                         } else {
                             Log.e("ERROR", "Response: " + response);

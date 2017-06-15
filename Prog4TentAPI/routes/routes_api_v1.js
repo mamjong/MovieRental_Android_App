@@ -61,12 +61,11 @@ router.post('/login', function(req, res) {
                 if (err) {
                     throw err
                 }
-
                 if (rows[0]) {
                     if (rows[0].hasOwnProperty('username') && rows[0].hasOwnProperty('password')) {
                         var hash = rows[0].password;
                         if (bcrypt.compareSync(password, hash)){
-                            res.status(200).json({"token" : encodeToken(username)});
+                            res.status(200).json({"token" : encodeToken(username), "id":rows[0].customer_id});
                         } else {
                             res.json({error:"Invalid password"});
                         }
@@ -115,7 +114,7 @@ router.post('/register', function(req, res, next){
 
 router.get('/rentals/:customerId', function(req, res) {
     var customerId = req.params.customerId;
-    var query = 'SELECT * FROM rental WHERE customer_id = ' + customerId + ';'
+    var query = 'SELECT * FROM `rental` inner join inventory on rental.inventory_id = inventory.inventory_id inner join film on film.film_id = inventory.film_id WHERE rental.customer_id =' + customerId +';'
 
     pool.getConnection(function (err, connection) {
         if (err) {throw err}
@@ -157,7 +156,7 @@ router.get('/filmid/:filmid', function (req, res) {
 
 
 
-    var query = "SELECT * FROM `view_rental` WHERE film_id = " + filmid + ";" ;
+    var query = "SELECT * FROM `film` inner join inventory on film.film_id = inventory.film_id inner join rental on rental.inventory_id = inventory.inventory_id where film.film_id = " + filmid+ ";" ;
 
     pool.getConnection((function (err, connection) {
         if(err){
