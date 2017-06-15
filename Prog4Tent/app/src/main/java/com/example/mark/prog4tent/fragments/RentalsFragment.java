@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -18,6 +20,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mark.prog4tent.R;
+import com.example.mark.prog4tent.adapter.RentalListAdapter;
 import com.example.mark.prog4tent.domain.Rental;
 
 
@@ -27,6 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -58,13 +62,18 @@ public class RentalsFragment extends Fragment {
         final ArrayList<Rental> rentals = new ArrayList<>();
 
         SharedPreferences  sharedPreferences = this.getActivity().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
+        final String ip = sharedPreferences.getString("IP", "no ip");
         final String id = sharedPreferences.getString("ID", "no id");
-        Log.i("SG", id );
 
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
 
+        ListView rentalListView = (ListView) getActivity().findViewById(R.id.rental_listView);
+        final ArrayAdapter rentalAdapter = new RentalListAdapter(getContext(), 0, rentals);
+        rentalListView.setAdapter(rentalAdapter);
+        rentalAdapter.notifyDataSetChanged();
 
-        String url = "http://145.49.21.149:8080/api/v1/rentals/" + id ;
+
+        String url = "http://" + ip + ":8080/api/v1/rentals/" + id ;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -80,7 +89,7 @@ public class RentalsFragment extends Fragment {
                                 e.printStackTrace();
                             }
 
-                            for(int i = 1; i < jsonArray.length(); i++){
+                            for(int i = 0; i < jsonArray.length(); i++){
                                 try {
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                                     Rental rental = new Rental();
@@ -92,7 +101,10 @@ public class RentalsFragment extends Fragment {
                                     rental.setYour_release(jsonObject.getString("release_year"));
                                     rental.setRental_id(jsonObject.getString("rental_id"));
 
+                                    Log.i("RENTAL", rental.getDescription());
+
                                     rentals.add(rental);
+                                    rentalAdapter.notifyDataSetChanged();
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();

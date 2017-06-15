@@ -73,4 +73,18 @@ public class Rental {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    @Override
+    public String toString() {
+        return "Rental{" +
+                "rental_id='" + rental_id + '\'' +
+                ", rental_date='" + rental_date + '\'' +
+                ", inventory_id='" + inventory_id + '\'' +
+                ", return_date='" + return_date + '\'' +
+                ", last_update='" + last_update + '\'' +
+                ", description='" + description + '\'' +
+                ", your_release='" + your_release + '\'' +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }
