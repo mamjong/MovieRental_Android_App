@@ -89,6 +89,9 @@ public class LoginActivity extends AppCompatActivity {
 
                             editor.putString("TOKEN", token);
                             editor.commit();
+
+                            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(i);
                         } else {
                             Log.e("ERROR", "Response: " + response);
                         }
