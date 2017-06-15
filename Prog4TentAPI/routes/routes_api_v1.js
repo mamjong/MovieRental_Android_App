@@ -241,8 +241,8 @@ router.put('/rentals/:customerId/:inventoryId', function (req, res) {
 });
 
 router.delete('/rental', function (req, res) {
-    var customerid = req.query.customerid || "";
-    var inventoryid = req.query.inventoryid || "";
+    var customerid = req.query.customerId || "";
+    var inventoryid = req.query.inventoryId || "";
 
     var query = "DELETE FROM rental WHERE customer_id = " + customerid + " AND inventory_id = " + inventoryid +" ;";
 
