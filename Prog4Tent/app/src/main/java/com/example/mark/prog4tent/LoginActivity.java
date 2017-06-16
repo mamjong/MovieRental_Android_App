@@ -1,5 +1,7 @@
 package com.example.mark.prog4tent;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +44,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         editor = getSharedPreferences(PREFS_NAME_TOKEN, MODE_PRIVATE).edit();
+        editor.putString("IP", "tentamenmm.herokuapp.com");
+        editor.commit();
+
 
 
         registerTextView = (TextView) findViewById(R.id.login_tv_register);
@@ -61,18 +66,27 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 volleyLogin(usernameText.getText().toString(), passwordText.getText().toString());
+
             }
         });
     }
 
     public void volleyLogin(String un, String pw) {
 
+        final ProgressDialog dialog = ProgressDialog.show(LoginActivity.this, "",
+                "Signing in. Please wait...", true);
+
+        SharedPreferences  sharedPreferences = getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
+        final String ip = sharedPreferences.getString("IP", "no ip");
+
         final String username = un;
         final String password = pw;
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        String url = "http://145.49.21.149:8080/api/v1/login";
+        String url = "http://"+ ip + "/api/v1/login";
+
+        Log.i("URL", url);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -89,11 +103,8 @@ public class LoginActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
 
-                            editor.putString("TOKEN", token);
-                            editor.putString("ID", id);
-                            editor.commit();
-
                             Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                            dialog.cancel();
                             startActivity(i);
                         } else {
                             Log.e("ERROR", "Response: " + response);
