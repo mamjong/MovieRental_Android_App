@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.android.volley.AuthFailureError;
@@ -22,6 +24,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mark.prog4tent.MainActivity;
 import com.example.mark.prog4tent.R;
+import com.example.mark.prog4tent.adapter.MovieAdapter;
 import com.example.mark.prog4tent.domain.Movie;
 
 import org.json.JSONArray;
@@ -29,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +43,9 @@ import java.util.Map;
 public class MoviesFragment extends Fragment {
 
     public static final String PREFS_NAME_TOKEN = "Prefsfile";
-    private ListView moviesList;
+    private ListView movieList;
+    private ArrayList<Movie> movieArrayList;
+    private ArrayAdapter movieAdapter;
 
     @Nullable
     @Override
@@ -53,15 +59,19 @@ public class MoviesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Movies");
 
-        moviesList = (ListView) getView().findViewById(R.id.movies_listview);
+        movieList = (ListView) getView().findViewById(R.id.movies_listview);
+        movieArrayList = new ArrayList<>();
+        movieAdapter = new MovieAdapter(getContext(), movieArrayList);
 
+        movieList.setAdapter(movieAdapter);
 
+        volleyMoviesRequest();
     }
 
     public void volleyMoviesRequest() {
 
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        String url = "http://145.49.21.149:8080/api/v1/films?offset=0&count=30";
+        String url = "https://tentamenmm.herokuapp.com/api/v1/films?offset=0&count=30";
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url,
                 new Response.Listener<JSONArray>() {
@@ -71,11 +81,15 @@ public class MoviesFragment extends Fragment {
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject object = response.getJSONObject(i);
                                 Movie movie = new Movie();
-                                movie.setTitle(object.getString(""));
+                                movie.setTitle(object.getString("title"));
+                                movie.setDescription(object.getString("description"));
+                                movie.setReleaseDate(object.getString("release_year"));
+                                movieArrayList.add(movie);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        movieAdapter.notifyDataSetChanged();
                     }
                 },
 
