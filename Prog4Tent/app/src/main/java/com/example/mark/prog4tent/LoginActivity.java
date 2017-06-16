@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         editor = getSharedPreferences(PREFS_NAME_TOKEN, MODE_PRIVATE).edit();
-        editor.putString("IP", "tentamenmm.herokuapp.com");
+        editor.putString("IP", "10.0.2.2:8080");
         editor.commit();
 
 
@@ -116,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("TEMP", "Something went wrong");
+                        dialog.cancel();
                     }
                 }) {
 

@@ -60,40 +60,43 @@ public class MoviesFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Movies");
-
-        movieList = (ListView) getView().findViewById(R.id.movies_listview);
-        movieArrayList = new ArrayList<>();
-        movieAdapter = new MovieAdapter(getContext(), movieArrayList);
-        movieList.setAdapter(movieAdapter);
-
-        preferences = getContext().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
-        ip = preferences.getString("IP", "No IP");
-
         volleyMoviesRequest();
     }
 
     public void volleyMoviesRequest() {
 
+        movieList = (ListView) getView().findViewById(R.id.movies_listview);
+        movieArrayList = new ArrayList<>();
+        movieAdapter = new MovieAdapter(getContext(), movieArrayList);
+        movieList.setAdapter(movieAdapter);
+        movieAdapter.notifyDataSetChanged();
+
+        preferences = getContext().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
+        ip = preferences.getString("IP", "No IP");
+
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        String url = "https://" + ip + "/api/v1/films?offset=0&count=30";
+        String url = "http://" + ip + "/api/v1/films?offset=0&count=30";
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
+                        Log.i("LOG_response", "" + response);
                         try {
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject object = response.getJSONObject(i);
+                                Log.i("LOG_JSONObject", "" + object);
                                 Movie movie = new Movie();
                                 movie.setTitle(object.getString("title"));
+                                Log.i("LOG_movieTitle", movie.getTitle());
                                 movie.setDescription(object.getString("description"));
                                 movie.setReleaseDate(object.getString("release_year"));
                                 movieArrayList.add(movie);
+                                movieAdapter.notifyDataSetChanged();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        movieAdapter.notifyDataSetChanged();
                     }
                 },
 

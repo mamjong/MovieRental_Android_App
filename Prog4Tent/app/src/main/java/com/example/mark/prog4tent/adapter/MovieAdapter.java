@@ -18,8 +18,6 @@ import java.util.ArrayList;
 
 public class MovieAdapter extends ArrayAdapter<Movie> {
 
-    TextView movieTitle, movieDescription, movieRelease;
-
     public MovieAdapter(Context context, ArrayList<Movie> movies) {
         super(context, 0, movies);
     }
@@ -33,9 +31,9 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             convertview = LayoutInflater.from(getContext()).inflate(R.layout.movie_lv_item, parent, false);
         }
 
-        movieTitle = (TextView) convertview.findViewById(R.id.movieItem_tv_title);
-        movieDescription = (TextView) convertview.findViewById(R.id.movieItem_tv_desc);
-        movieRelease = (TextView) convertview.findViewById(R.id.movieItem_tv_release);
+        TextView movieTitle = (TextView) convertview.findViewById(R.id.movieItem_tv_title);
+        TextView movieDescription = (TextView) convertview.findViewById(R.id.movieItem_tv_desc);
+        TextView movieRelease = (TextView) convertview.findViewById(R.id.movieItem_tv_release);
 
         movieTitle.setText(movie.getTitle());
         movieDescription.setText(movie.getDescription());
