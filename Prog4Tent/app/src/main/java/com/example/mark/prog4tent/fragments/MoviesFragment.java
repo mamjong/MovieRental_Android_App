@@ -10,17 +10,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mark.prog4tent.MainActivity;
 import com.example.mark.prog4tent.R;
+import com.example.mark.prog4tent.domain.Movie;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,6 +39,7 @@ import java.util.Map;
 public class MoviesFragment extends Fragment {
 
     public static final String PREFS_NAME_TOKEN = "Prefsfile";
+    private ListView moviesList;
 
     @Nullable
     @Override
@@ -48,6 +53,9 @@ public class MoviesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Movies");
 
+        moviesList = (ListView) getView().findViewById(R.id.movies_listview);
+
+
     }
 
     public void volleyMoviesRequest() {
@@ -55,18 +63,26 @@ public class MoviesFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         String url = "http://145.49.21.149:8080/api/v1/films?offset=0&count=30";
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url,
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(String response) {
-                        //TODO: on response
+                    public void onResponse(JSONArray response) {
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject object = response.getJSONObject(i);
+                                Movie movie = new Movie();
+                                movie.setTitle(object.getString(""));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
 
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("TEMP", "Something went wrong");
+                        Log.e("ERROR", "Something went wrong");
                     }
                 }) {
 
@@ -80,22 +96,22 @@ public class MoviesFragment extends Fragment {
                 return headers;
             }
 
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
+//            public String getBodyContentType() {
+//                return "application/json; charset=utf-8";
+//            }
 
-            public byte[] getBody() throws AuthFailureError {
-                String mContent = "{}";
-                byte[] body = new byte[0];
-                try {
-                    body = mContent.getBytes("UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                return body;
-            }
+//            public byte[] getBody() throws AuthFailureError {
+//                String mContent = "{}";
+//                byte[] body = new byte[0];
+//                try {
+//                    body = mContent.getBytes("UTF-8");
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                }
+//                return body;
+//            }
         };
 
-        requestQueue.add(stringRequest);
+        requestQueue.add(jsonArrayRequest);
     }
 }
