@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -44,7 +45,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         editor = getSharedPreferences(PREFS_NAME_TOKEN, MODE_PRIVATE).edit();
-        editor.putString("IP", "tentamenmm.herokuapp.com");
+        editor.putString("IPLOCAL", "192.168.178.20:8080");
+        editor.putString("IPHEROKU", "tentamenmm.herokuapp.com");
         editor.commit();
 
 
@@ -77,16 +79,18 @@ public class LoginActivity extends AppCompatActivity {
                 "Signing in. Please wait...", true);
 
         SharedPreferences  sharedPreferences = getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
-        final String ip = sharedPreferences.getString("IP", "no ip");
+        final String iplocal = sharedPreferences.getString("IPLOCAL", "no ip");
+        final String ipheroku = sharedPreferences.getString("IPHEROKU", "no ip");
 
         final String username = un;
         final String password = pw;
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        String url = "http://"+ ip + "/api/v1/login";
+        String url = "http://"+ ipheroku + "/api/v1/login";
 
         Log.i("URL", url);
+
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -107,6 +111,8 @@ public class LoginActivity extends AppCompatActivity {
                             dialog.cancel();
                             startActivity(i);
                         } else {
+                            dialog.cancel();
+                            Toast.makeText(getApplicationContext(), "connection failed", Toast.LENGTH_SHORT).show();
                             Log.e("ERROR", "Response: " + response);
                         }
                     }
@@ -115,6 +121,8 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        dialog.cancel();
+                        Toast.makeText(getApplicationContext(), "connection failed", Toast.LENGTH_SHORT).show();
                         Log.e("TEMP", "Something went wrong");
                     }
                 }) {
