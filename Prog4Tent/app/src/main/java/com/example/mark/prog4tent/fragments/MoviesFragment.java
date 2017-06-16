@@ -43,9 +43,11 @@ import java.util.Map;
 public class MoviesFragment extends Fragment {
 
     public static final String PREFS_NAME_TOKEN = "Prefsfile";
+    private SharedPreferences preferences;
     private ListView movieList;
     private ArrayList<Movie> movieArrayList;
     private ArrayAdapter movieAdapter;
+    private String ip;
 
     @Nullable
     @Override
@@ -62,8 +64,10 @@ public class MoviesFragment extends Fragment {
         movieList = (ListView) getView().findViewById(R.id.movies_listview);
         movieArrayList = new ArrayList<>();
         movieAdapter = new MovieAdapter(getContext(), movieArrayList);
-
         movieList.setAdapter(movieAdapter);
+
+        preferences = getContext().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
+        ip = preferences.getString("IP", "No IP");
 
         volleyMoviesRequest();
     }
@@ -71,7 +75,7 @@ public class MoviesFragment extends Fragment {
     public void volleyMoviesRequest() {
 
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        String url = "https://tentamenmm.herokuapp.com/api/v1/films?offset=0&count=30";
+        String url = "https://" + ip + "/api/v1/films?offset=0&count=30";
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url,
                 new Response.Listener<JSONArray>() {
