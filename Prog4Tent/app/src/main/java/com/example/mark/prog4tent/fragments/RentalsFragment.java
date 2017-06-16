@@ -1,6 +1,7 @@
 package com.example.mark.prog4tent.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -19,6 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.mark.prog4tent.DetailedRentalActivity;
 import com.example.mark.prog4tent.R;
 import com.example.mark.prog4tent.adapter.RentalListAdapter;
 import com.example.mark.prog4tent.domain.Rental;
@@ -28,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,8 +76,17 @@ public class RentalsFragment extends Fragment {
         rentalListView.setAdapter(rentalAdapter);
         rentalAdapter.notifyDataSetChanged();
 
+        rentalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(getContext(), DetailedRentalActivity.class);
+                i.putExtra("RENTAL", rentals.get(position));
+                startActivity(i);
+            }
+        });
 
-        String url = "http://" + ip + ":8080/api/v1/rentals/" + id ;
+
+        String url = "http://" + ip + "/api/v1/rentals/" + id ;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -100,6 +113,7 @@ public class RentalsFragment extends Fragment {
                                     rental.setReturn_date(jsonObject.getString("return_date"));
                                     rental.setYour_release(jsonObject.getString("release_year"));
                                     rental.setRental_id(jsonObject.getString("rental_id"));
+                                    rental.setCustomerId(jsonObject.getString("customer_id"));
 
                                     Log.i("RENTAL", rental.getDescription());
 

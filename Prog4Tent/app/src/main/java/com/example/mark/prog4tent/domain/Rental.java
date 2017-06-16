@@ -1,11 +1,30 @@
 package com.example.mark.prog4tent.domain;
 
+import java.io.Serializable;
+
 /**
  * Created by Mika Krooswijk on 15-6-2017.
  */
 
-public class Rental {
-    String rental_id, rental_date, inventory_id, return_date, last_update, description, your_release, title;
+public class Rental implements Serializable {
+    String rental_id;
+    String rental_date;
+    String inventory_id;
+    String return_date;
+    String last_update;
+    String description;
+    String your_release;
+    String title;
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    String customerId;
 
     public Rental() {
     }
