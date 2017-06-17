@@ -75,6 +75,7 @@ public class RentalsFragment extends Fragment {
                             final String iplocal = sharedPreferences.getString("IPLOCAL", "no ip");
                             final String ipheroku = sharedPreferences.getString("IPHEROKU", "no ip");
                             final String id = sharedPreferences.getString("ID", "no id");
+                            Log.i("ID RENT", id);
 
                             RequestQueue requestQueue = Volley.newRequestQueue(getContext());
 
@@ -94,6 +95,7 @@ public class RentalsFragment extends Fragment {
 
 
                             String url = "http://" + ipheroku + "/api/v1/rentals/" + id ;
+                            Log.i("URL", url);
 
                             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                                     new Response.Listener<String>() {
