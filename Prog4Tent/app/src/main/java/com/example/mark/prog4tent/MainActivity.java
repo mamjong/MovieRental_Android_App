@@ -35,6 +35,11 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment defaultFragment = new MoviesFragment();
+        ft.replace(R.id.content_frame, defaultFragment);
+        ft.commit();
     }
 
     @Override

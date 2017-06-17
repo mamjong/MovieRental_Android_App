@@ -81,13 +81,14 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences  sharedPreferences = getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
         final String iplocal = sharedPreferences.getString("IPLOCAL", "no ip");
         final String ipheroku = sharedPreferences.getString("IPHEROKU", "no ip");
+        final String ipemul = sharedPreferences.getString("IPEMUL", "no ip");
 
         final String username = un;
         final String password = pw;
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        String url = "http://"+ ipheroku + "/api/v1/login";
+        String url = "http://"+ ipemul + "/api/v1/login";
 
         Log.i("URL", url);
 

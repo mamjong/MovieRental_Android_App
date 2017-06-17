@@ -14,10 +14,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mark.prog4tent.R;
 import com.example.mark.prog4tent.adapter.CopyAdapter;
@@ -28,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +43,7 @@ public class CopiesFragment extends Fragment {
 
     public static final String PREFS_NAME_TOKEN = "Prefsfile";
     private SharedPreferences preferences;
-    private String ip;
+    private String ip, token;
     private int id;
 
     private Movie movie;
@@ -61,8 +64,9 @@ public class CopiesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         preferences = getActivity().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
-        ip = preferences.getString("IP", "NO IP");
+        ip = preferences.getString("IPEMUL", "NO IP");
         id = preferences.getInt("ID", 0);
+        token = preferences.getString("TOKEN", "No token");
 
 
         movie = new Movie();
@@ -133,31 +137,17 @@ public class CopiesFragment extends Fragment {
         requestQueue.add(jsonArrayRequest);
     }
 
-    public void volleyRentCopy(Copy copy) {
+    public void volleyRentCopy(final Copy copy) {
 
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String url = "http://" + ip + "/rentals/:customerId/" + copy.getInventoryId();
+        String url = "http://" + ip + "/rentals/" + id + "/" + copy.getInventoryId();
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url,
-                new Response.Listener<JSONArray>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            for (int i = 0; i < response.length(); i++) {
-                                JSONObject object = response.getJSONObject(i);
-                                Copy copy = new Copy();
-                                copy.setInventoryId(object.getInt("inventory_id"));
-                                copy.setRentalDate(object.getString("rental_date"));
-                                copy.setRentalId(object.getInt("rental_id"));
-                                copy.setStaffId(object.getInt("staff_id"));
-                                copy.setStoreId(object.getInt("store_id"));
-                                copy.setRented(object.isNull("return_date"));
+                    public void onResponse(String response) {
+                        if (!response.contains("error") && !response.isEmpty()) {
 
-                                copyArrayList.add(copy);
-                                copyAdapter.notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
                     }
                 },
@@ -172,10 +162,22 @@ public class CopiesFragment extends Fragment {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
+                headers.put("X-Access-Token", token);
                 return headers;
+            }
+
+            public byte[] getBody() {
+                String mContent = "{\"StaffId\":\"" + copy.getStaffId() + "\"}";
+                byte[] body = new byte[0];
+                try {
+                    body = mContent.getBytes("UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                return body;
             }
         };
 
-        requestQueue.add(jsonArrayRequest);
+        requestQueue.add(stringRequest);
     }
 }
