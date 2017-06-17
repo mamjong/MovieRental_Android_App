@@ -104,6 +104,13 @@ public class LoginActivity extends AppCompatActivity {
                                 JSONObject jsonObject = new JSONObject(response);
                                 token = jsonObject.getString("token");
                                 id = jsonObject.getString("id");
+
+
+                                editor.putString("ID", id);
+                                editor.putString("TOKEN", token);
+                                editor.commit();
+
+                                Log.i("ID", id);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

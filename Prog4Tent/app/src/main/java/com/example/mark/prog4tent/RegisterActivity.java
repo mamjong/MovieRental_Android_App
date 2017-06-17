@@ -54,8 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
                     if (confirmTextView.getText().toString().equals(passwordTextView.getText().toString())) {
                         volleyRegister(usernameTextView.getText().toString(), passwordTextView.getText().toString());
 
-                        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(i);
+
                     } else {
                         Toast.makeText(getApplicationContext(), "password are not the same", Toast.LENGTH_SHORT).show();
                     }
@@ -69,19 +68,22 @@ public class RegisterActivity extends AppCompatActivity {
     public void volleyRegister(String un, String pw){
 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
-        final String ip = sharedPreferences.getString("IP", "no ip");
+        final String iplocal = sharedPreferences.getString("IPLOCAL", "no ip");
+        final String ipheroku = sharedPreferences.getString("IPHEROKU", "no ip");
 
         final String username = un;
         final String password = pw;
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        String url = "http:/" + ip + "/api/v1/register";
+        String url = "http:/" + ipheroku + "/api/v1/register";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                        startActivity(i);
 
                     }
                 },

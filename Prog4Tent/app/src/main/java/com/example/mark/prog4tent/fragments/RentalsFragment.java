@@ -68,10 +68,12 @@ public class RentalsFragment extends Fragment {
 
         final ArrayList<Rental> rentals = new ArrayList<>();
 
+
         SharedPreferences  sharedPreferences = this.getActivity().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
         final String iplocal = sharedPreferences.getString("IPLOCAL", "no ip");
         final String ipheroku = sharedPreferences.getString("IPHEROKU", "no ip");
         final String id = sharedPreferences.getString("ID", "no id");
+
 
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
