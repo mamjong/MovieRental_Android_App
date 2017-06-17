@@ -146,9 +146,7 @@ public class CopiesFragment extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        if (!response.contains("error") && !response.isEmpty()) {
-
-                        }
+                        copyAdapter.notifyDataSetChanged();
                     }
                 },
 
