@@ -18,27 +18,29 @@ import java.util.ArrayList;
 
 public class MovieAdapter extends ArrayAdapter<Movie> {
 
+    private TextView movieTitle, movieDescription, movieRelease;
+
     public MovieAdapter(Context context, ArrayList<Movie> movies) {
         super(context, 0, movies);
     }
 
     @Override
-    public View getView(int position, View convertview, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
 
         Movie movie = getItem(position);
 
-        if (convertview == null) {
-            convertview = LayoutInflater.from(getContext()).inflate(R.layout.movie_lv_item, parent, false);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.movie_lv_item, parent, false);
         }
 
-        TextView movieTitle = (TextView) convertview.findViewById(R.id.movieItem_tv_title);
-        TextView movieDescription = (TextView) convertview.findViewById(R.id.movieItem_tv_desc);
-        TextView movieRelease = (TextView) convertview.findViewById(R.id.movieItem_tv_release);
+        movieTitle = (TextView) convertView.findViewById(R.id.movieItem_tv_title);
+        movieDescription = (TextView) convertView.findViewById(R.id.movieItem_tv_desc);
+        movieRelease = (TextView) convertView.findViewById(R.id.movieItem_tv_release);
 
         movieTitle.setText(movie.getTitle());
         movieDescription.setText(movie.getDescription());
         movieRelease.setText(movie.getReleaseDate());
 
-        return convertview;
+        return convertView;
     }
 }

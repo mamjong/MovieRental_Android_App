@@ -1,11 +1,11 @@
 package com.example.mark.prog4tent.fragments;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mark.prog4tent.DetailedRentalActivity;
+import com.example.mark.prog4tent.MainActivity;
 import com.example.mark.prog4tent.R;
 import com.example.mark.prog4tent.adapter.RentalListAdapter;
 import com.example.mark.prog4tent.domain.Rental;
@@ -69,17 +70,17 @@ public class RentalsFragment extends Fragment {
         final String ip = sharedPreferences.getString("IP", "no ip");
         final String id = sharedPreferences.getString("ID", "no id");
 
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
         ListView rentalListView = (ListView) getActivity().findViewById(R.id.rental_listView);
-        final ArrayAdapter rentalAdapter = new RentalListAdapter(getContext(), 0, rentals);
+        final ArrayAdapter rentalAdapter = new RentalListAdapter(getActivity(), 0, rentals);
         rentalListView.setAdapter(rentalAdapter);
         rentalAdapter.notifyDataSetChanged();
 
         rentalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getContext(), DetailedRentalActivity.class);
+                Intent i = new Intent(getActivity(), DetailedRentalActivity.class);
                 i.putExtra("RENTAL", rentals.get(position));
                 startActivity(i);
             }

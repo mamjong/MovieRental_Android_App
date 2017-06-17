@@ -2,7 +2,6 @@ package com.example.mark.prog4tent.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,93 +9,76 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.mark.prog4tent.MainActivity;
 import com.example.mark.prog4tent.R;
-import com.example.mark.prog4tent.adapter.MovieAdapter;
+import com.example.mark.prog4tent.adapter.CopyAdapter;
+import com.example.mark.prog4tent.domain.Copy;
 import com.example.mark.prog4tent.domain.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Mark on 15-6-2017.
+ * Created by mark on 17-6-2017.
  */
 
-public class MoviesFragment extends Fragment {
+public class CopiesFragment extends Fragment {
 
     public static final String PREFS_NAME_TOKEN = "Prefsfile";
     private SharedPreferences preferences;
-    private ListView movieList;
-    private ArrayList<Movie> movieArrayList;
-    private ArrayAdapter movieAdapter;
-    private String ip, token;
+    private String ip;
+
+    private Movie movie;
     private Bundle bundle;
+
+    private ListView copyList;
+    private ArrayAdapter copyAdapter;
+    private ArrayList<Copy> copyArrayList;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_movies, container, false);
+        return inflater.inflate(R.layout.fragment_copies, container, false);
     }
-
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle("Movies");
-
-        movieList = (ListView) getActivity().findViewById(R.id.movies_listview);
-        movieArrayList = new ArrayList<>();
-        movieAdapter = new MovieAdapter(getActivity(), movieArrayList);
-        movieList.setAdapter(movieAdapter);
 
         preferences = getActivity().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
-        ip = preferences.getString("IP", "No IP");
-        token = preferences.getString("TOKEN", "No token");
+        ip = preferences.getString("IP", "NO IP");
 
-        movieList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Movie movie = movieArrayList.get(position);
+        movie = new Movie();
+        bundle = getArguments();
+        movie = bundle.getParcelable("MOVIE");
+        getActivity().setTitle("Copies for: " + movie.getTitle());
 
-                bundle = new Bundle();
-                bundle.putParcelable("MOVIE", movie);
+        copyList = (ListView) getActivity().findViewById(R.id.copies_listview);
+        copyArrayList = new ArrayList<>();
+        copyAdapter = new CopyAdapter(getActivity(), copyArrayList);
+        copyList.setAdapter(copyAdapter);
 
-                CopiesFragment copiesFragment= new CopiesFragment();
-                copiesFragment.setArguments(bundle);
-                getActivity().getFragmentManager().beginTransaction()
-                        .replace(R.id.content_frame, copiesFragment, "TAG")
-                        .addToBackStack(null)
-                        .commit();
-
-            }
-        });
-
-        volleyMoviesRequest();
+        volleyCopiesRequest();
     }
 
-    public void volleyMoviesRequest() {
+    public void volleyCopiesRequest() {
 
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        String url = "http://" + ip + "/api/v1/films?offset=0&count=30";
+        String url = "http://" + ip + "/api/v1/filmid/" + movie.getId();
+        Log.e("URL_CHECK", url);
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url,
                 new Response.Listener<JSONArray>() {
@@ -105,13 +87,16 @@ public class MoviesFragment extends Fragment {
                         try {
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject object = response.getJSONObject(i);
-                                Movie movie = new Movie();
-                                movie.setId(object.getInt("film_id"));
-                                movie.setTitle(object.getString("title"));
-                                movie.setDescription(object.getString("description"));
-                                movie.setReleaseDate(object.getString("release_year"));
-                                movieArrayList.add(movie);
-                                movieAdapter.notifyDataSetChanged();
+                                Copy copy = new Copy();
+                                copy.setInventoryId(object.getInt("inventory_id"));
+                                copy.setRentalDate(object.getString("rental_date"));
+                                copy.setRentalId(object.getInt("rental_id"));
+                                copy.setStaffId(object.getInt("staff_id"));
+                                copy.setStoreId(object.getInt("store_id"));
+                                copy.setRented(object.isNull("return_date"));
+
+                                copyArrayList.add(copy);
+                                copyAdapter.notifyDataSetChanged();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -127,10 +112,8 @@ public class MoviesFragment extends Fragment {
                 }) {
 
             public Map<String, String> getHeaders() throws AuthFailureError {
-
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
-                headers.put("X-Access-Token", token);
                 return headers;
             }
         };
