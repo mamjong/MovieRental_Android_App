@@ -1,5 +1,6 @@
 package com.example.mark.prog4tent.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -22,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mark.prog4tent.DetailedRentalActivity;
+import com.example.mark.prog4tent.LoginActivity;
 import com.example.mark.prog4tent.R;
 import com.example.mark.prog4tent.adapter.RentalListAdapter;
 import com.example.mark.prog4tent.domain.Rental;
@@ -63,44 +66,48 @@ public class RentalsFragment extends Fragment {
 
     public void volleyGetRentals() {
 
+        final ProgressDialog dialog = ProgressDialog.show(getContext(), "",
+                "Signing in. Please wait...", true);
+
         final ArrayList<Rental> rentals = new ArrayList<>();
 
-        SharedPreferences  sharedPreferences = this.getActivity().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
-        final String ip = sharedPreferences.getString("IP", "no ip");
-        final String id = sharedPreferences.getString("ID", "no id");
+                            SharedPreferences  sharedPreferences = this.getActivity().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
+                            final String iplocal = sharedPreferences.getString("IPLOCAL", "no ip");
+                            final String ipheroku = sharedPreferences.getString("IPHEROKU", "no ip");
+                            final String id = sharedPreferences.getString("ID", "no id");
 
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
 
-        ListView rentalListView = (ListView) getActivity().findViewById(R.id.rental_listView);
-        final ArrayAdapter rentalAdapter = new RentalListAdapter(getContext(), 0, rentals);
-        rentalListView.setAdapter(rentalAdapter);
-        rentalAdapter.notifyDataSetChanged();
+                            ListView rentalListView = (ListView) getActivity().findViewById(R.id.rental_listView);
+                            final ArrayAdapter rentalAdapter = new RentalListAdapter(getContext(), 0, rentals);
+                            rentalListView.setAdapter(rentalAdapter);
+                            rentalAdapter.notifyDataSetChanged();
 
-        rentalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getContext(), DetailedRentalActivity.class);
-                i.putExtra("RENTAL", rentals.get(position));
-                startActivity(i);
-            }
-        });
+                            rentalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    Intent i = new Intent(getContext(), DetailedRentalActivity.class);
+                                    i.putExtra("RENTAL", rentals.get(position));
+                                    startActivity(i);
+                                }
+                            });
 
 
-        String url = "http://" + ip + "/api/v1/rentals/" + id ;
+                            String url = "http://" + ipheroku + "/api/v1/rentals/" + id ;
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        if (!response.contains("error") && !response.isEmpty()){
+                            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                                    new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            if (!response.contains("error") && !response.isEmpty()){
 
-                            JSONArray jsonArray = new JSONArray();
+                                                JSONArray jsonArray = new JSONArray();
 
-                            try {
-                                jsonArray = new JSONArray(response);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                                                try {
+                                                    jsonArray = new JSONArray(response);
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
 
                             for(int i = 0; i < jsonArray.length(); i++){
                                 try {
@@ -114,20 +121,27 @@ public class RentalsFragment extends Fragment {
                                     rental.setYour_release(jsonObject.getString("release_year"));
                                     rental.setRental_id(jsonObject.getString("rental_id"));
                                     rental.setCustomerId(jsonObject.getString("customer_id"));
+                                    rental.setStaffId(jsonObject.getString("staff_id"));
 
-                                    Log.i("RENTAL", rental.getDescription());
+                                    boolean isRented = jsonObject.isNull("return_date");
 
-                                    rentals.add(rental);
-                                    rentalAdapter.notifyDataSetChanged();
+                                    if(isRented) {
+                                        rentals.add(rental);
+                                        rentalAdapter.notifyDataSetChanged();
+                                    }
+
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
+                            dialog.cancel();
 
 
                         } else {
                             Log.e("ERROR", "Response: " + response);
+                            dialog.cancel();
+                            Toast.makeText(getContext(), "connection failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -136,6 +150,8 @@ public class RentalsFragment extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("TEMP", "Something went wrong");
+                        dialog.cancel();
+                        Toast.makeText(getContext(), "connection failed", Toast.LENGTH_SHORT).show();
                     }
                 }) {
 

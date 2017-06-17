@@ -15,6 +15,15 @@ public class Rental implements Serializable {
     String description;
     String your_release;
     String title;
+    String staffId;
+
+    public String getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(String staffId) {
+        this.staffId = staffId;
+    }
 
     public String getCustomerId() {
         return customerId;
