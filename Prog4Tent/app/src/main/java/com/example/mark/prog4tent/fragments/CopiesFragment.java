@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -40,6 +41,7 @@ public class CopiesFragment extends Fragment {
     public static final String PREFS_NAME_TOKEN = "Prefsfile";
     private SharedPreferences preferences;
     private String ip;
+    private int id;
 
     private Movie movie;
     private Bundle bundle;
@@ -60,6 +62,8 @@ public class CopiesFragment extends Fragment {
 
         preferences = getActivity().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
         ip = preferences.getString("IP", "NO IP");
+        id = preferences.getInt("ID", 0);
+
 
         movie = new Movie();
         bundle = getArguments();
@@ -71,6 +75,14 @@ public class CopiesFragment extends Fragment {
         copyAdapter = new CopyAdapter(getActivity(), copyArrayList);
         copyList.setAdapter(copyAdapter);
 
+        copyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Copy copy = copyArrayList.get(position);
+                volleyRentCopy(copy);
+            }
+        });
+
         volleyCopiesRequest();
     }
 
@@ -79,6 +91,52 @@ public class CopiesFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         String url = "http://" + ip + "/api/v1/filmid/" + movie.getId();
         Log.e("URL_CHECK", url);
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject object = response.getJSONObject(i);
+                                Copy copy = new Copy();
+                                copy.setInventoryId(object.getInt("inventory_id"));
+                                copy.setRentalDate(object.getString("rental_date"));
+                                copy.setRentalId(object.getInt("rental_id"));
+                                copy.setStaffId(object.getInt("staff_id"));
+                                copy.setStoreId(object.getInt("store_id"));
+                                copy.setRented(object.isNull("return_date"));
+
+                                copyArrayList.add(copy);
+                                copyAdapter.notifyDataSetChanged();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("ERROR", "Something went wrong");
+                    }
+                }) {
+
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+        };
+
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    public void volleyRentCopy(Copy copy) {
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        String url = "http://" + ip + "/rentals/:customerId/" + copy.getInventoryId();
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url,
                 new Response.Listener<JSONArray>() {
