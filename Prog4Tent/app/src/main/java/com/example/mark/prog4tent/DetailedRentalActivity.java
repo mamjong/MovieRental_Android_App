@@ -24,6 +24,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,7 +54,7 @@ public class DetailedRentalActivity extends AppCompatActivity {
         inleverButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                volleyHandIn(rental.getCustomerId(), rental.getInventory_id());
+                volleyHandIn(rental.getCustomerId(), rental.getInventory_id(), rental);
             }
         });
 
@@ -69,10 +71,11 @@ public class DetailedRentalActivity extends AppCompatActivity {
 
 
     }
-    public void volleyHandIn(String cutomerID, String invenrotyID) {
+    public void volleyHandIn(String cutomerID, String invenrotyID, final Rental rental) {
 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
-        final String ip = sharedPreferences.getString("IP", "no ip");
+        final String iplocal = sharedPreferences.getString("IPLOCAL", "no ip");
+        final String ipheroku = sharedPreferences.getString("IPHEROKU", "no ip");
         final String token = sharedPreferences.getString("TOKEN", "no token");
 
         final String custID = cutomerID;
@@ -80,10 +83,10 @@ public class DetailedRentalActivity extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        String url = "http://"+ ip + "/api/v1/rental?customerId=" + custID + "&inventoryId=" + invID;
+        String url = "http://"+ ipheroku + "/api/v1/rentals?customerId=" + custID + "&inventoryId=" + invID;
 
 
-        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -129,6 +132,23 @@ public class DetailedRentalActivity extends AppCompatActivity {
 
             public String getBodyContentType() {
                 return "application/json; charset=utf-8";
+            }
+
+            public byte[] getBody() throws AuthFailureError {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-dd-MM hh:mm:ss");
+                String now = simpleDateFormat.format(new Date());
+
+
+
+
+                String mContent = "{\"RentalDate\":\"" + rental.getRental_date() + "\",\"ReturnDate\":\"" + now +  "\",\"staffId\":\"" + rental.getStaffId() +  "\"}";
+                byte[] body = new byte[0];
+                try {
+                    body = mContent.getBytes("UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                return body;
             }
 
 
