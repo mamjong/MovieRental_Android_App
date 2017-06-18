@@ -70,11 +70,19 @@ public class RentalsFragment extends Fragment {
 
 
         SharedPreferences  sharedPreferences = this.getActivity().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
-        final String iplocal = sharedPreferences.getString("IPLOCAL", "no ip");
-        final String ipheroku = sharedPreferences.getString("IPHEROKU", "no ip");
-        final String ipemul = sharedPreferences.getString("IPEMUL", "no ip");
-        final String id = sharedPreferences.getString("ID", "no id");
+        String ipTemp = "";
 
+        if (sharedPreferences.getInt("USEIP", 0) == 0) {
+            ipTemp = sharedPreferences.getString("IPLOCAL", "no ip");
+        }else if(sharedPreferences.getInt("USEIP", 0) == 1) {
+            ipTemp = sharedPreferences.getString("IPHEROKU", "no ip");
+        }
+
+
+        final String ipFinal = ipTemp;
+
+        final String id = sharedPreferences.getString("ID", "no id");
+        Log.i("ID RENT", id);
 
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
 
@@ -92,8 +100,17 @@ public class RentalsFragment extends Fragment {
             }
         });
 
-        String url = "http://" + ipemul + "/api/v1/rentals/" + id ;
-        Log.e("URL", url);
+        rentalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(getActivity(), DetailedRentalActivity.class);
+                i.putExtra("RENTAL", rentals.get(position));
+                startActivity(i);
+            }
+        });
+
+        String url = "http://" + ipFinal + "/api/v1/rentals/" + id ;
+        Log.i("URL", url);
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -125,7 +142,7 @@ public class RentalsFragment extends Fragment {
 
                                     boolean isRented = jsonObject.isNull("return_date");
 
-                                    if(isRented) {
+                                    if(!isRented) {
                                         rentals.add(rental);
                                         rentalAdapter.notifyDataSetChanged();
                                     }
