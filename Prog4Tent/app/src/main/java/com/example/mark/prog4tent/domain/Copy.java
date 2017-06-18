@@ -9,7 +9,7 @@ import android.os.Parcelable;
 
 public class Copy implements Parcelable {
 
-    private int mData, inventoryId, storeId, rentalId, staffId;
+    private int mData, inventoryId, storeId;
     private boolean rented;
     private String rentalDate;
 
@@ -58,28 +58,12 @@ public class Copy implements Parcelable {
         this.storeId = storeId;
     }
 
-    public int getRentalId() {
-        return rentalId;
-    }
-
-    public void setRentalId(int rentalId) {
-        this.rentalId = rentalId;
-    }
-
     public String getRentalDate() {
         return rentalDate;
     }
 
     public void setRentalDate(String rentalDate) {
         this.rentalDate = rentalDate.substring(0, 10);
-    }
-
-    public int getStaffId() {
-        return staffId;
-    }
-
-    public void setStaffId(int staffId) {
-        this.staffId = staffId;
     }
 
     public boolean getRented() {

@@ -76,6 +76,7 @@ public class DetailedRentalActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
         final String iplocal = sharedPreferences.getString("IPLOCAL", "no ip");
         final String ipheroku = sharedPreferences.getString("IPHEROKU", "no ip");
+        final String ipemul = sharedPreferences.getString("IPEMUL", "No ip");
         final String token = sharedPreferences.getString("TOKEN", "no token");
 
         final String custID = cutomerID;
@@ -83,7 +84,7 @@ public class DetailedRentalActivity extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        String url = "http://"+ ipheroku + "/api/v1/rentals?customerId=" + custID + "&inventoryId=" + invID;
+        String url = "http://"+ ipemul + "/api/v1/rentals?customerId=" + custID + "&inventoryId=" + invID;
 
 
         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url,
@@ -105,11 +106,6 @@ public class DetailedRentalActivity extends AppCompatActivity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
-
-
-
-
                         } else {
                             Log.e("ERROR", "Response: " + response);
                         }

@@ -72,6 +72,7 @@ public class RentalsFragment extends Fragment {
         SharedPreferences  sharedPreferences = this.getActivity().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
         final String iplocal = sharedPreferences.getString("IPLOCAL", "no ip");
         final String ipheroku = sharedPreferences.getString("IPHEROKU", "no ip");
+        final String ipemul = sharedPreferences.getString("IPEMUL", "no ip");
         final String id = sharedPreferences.getString("ID", "no id");
 
 
@@ -91,7 +92,8 @@ public class RentalsFragment extends Fragment {
             }
         });
 
-        String url = "http://" + ipheroku + "/api/v1/rentals/" + id ;
+        String url = "http://" + ipemul + "/api/v1/rentals/" + id ;
+        Log.e("URL", url);
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {

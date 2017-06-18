@@ -110,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putString("TOKEN", token);
                                 editor.commit();
 
+                                Log.i("TOKEN", token);
                                 Log.i("ID", id);
                             } catch (JSONException e) {
                                 e.printStackTrace();

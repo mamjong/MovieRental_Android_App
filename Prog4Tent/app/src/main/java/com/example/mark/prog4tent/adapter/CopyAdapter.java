@@ -38,24 +38,21 @@ public class CopyAdapter extends ArrayAdapter<Copy> {
 
         copyInventoryId = (TextView) convertView.findViewById(R.id.copyItem_tv_inventoryId);
         copyStoreId = (TextView) convertView.findViewById(R.id.copyItem_tv_storeId);
-        copyRentalId = (TextView) convertView.findViewById(R.id.copyItem_tv_rentalId);
-        copyStaffId = (TextView) convertView.findViewById(R.id.copyItem_tv_staffId);
         copyRentalDate = (TextView) convertView.findViewById(R.id.copyItem_tv_rentalDate);
         copyRented = (TextView) convertView.findViewById(R.id.copyItem_tv_rented);
 
         copyInventoryId.setText("Inventory: " + copy.getInventoryId());
         copyStoreId.setText("Store: " + copy.getStoreId());
-        copyRentalId.setText("Rental Nr: " + copy.getRentalId());
-        copyStaffId.setText("Staff Nr: " + copy.getStaffId());
 
         if (copy.getRented()) {
             copyRented.setText("NOT AVAILABLE");
             copyRented.setTextColor(Color.parseColor("#FF0000"));
-            copyRentalDate.setVisibility(View.INVISIBLE);
+            copyRentalDate.setText("Rented on: " + copy.getRentalDate());
+            copyRentalDate.setVisibility(View.VISIBLE);
         } else {
             copyRented.setText("AVAILABLE");
             copyRented.setTextColor(Color.parseColor("#2CB63C"));
-            copyRentalDate.setText("Rented on: " + copy.getRentalDate());
+            copyRentalDate.setVisibility(View.INVISIBLE);
         }
 
         return convertView;
