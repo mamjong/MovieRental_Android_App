@@ -74,6 +74,7 @@ public class DetailedRentalActivity extends AppCompatActivity {
     public void volleyHandIn(String cutomerID, String invenrotyID, final Rental rental) {
 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
+
         String ipTemp = "";
 
         if (sharedPreferences.getInt("USEIP", 0) == 0) {
@@ -94,7 +95,6 @@ public class DetailedRentalActivity extends AppCompatActivity {
 
         String url = "http://"+ ipFinal + "/api/v1/rentals?customerId=" + custID + "&inventoryId=" + invID;
 
-
         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url,
                 new Response.Listener<String>() {
                     @Override
@@ -114,11 +114,6 @@ public class DetailedRentalActivity extends AppCompatActivity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
-
-
-
-
                         } else {
                             Log.e("ERROR", "Response: " + response);
                         }

@@ -51,7 +51,7 @@ describe('rental POST', function () {
     before(function (done) {
         chai.request(server)
             .post('/api/v1/login')
-            .send({"username": "Mark", "password": "12345"})
+            .send({"username": "test", "password": "test"})
             .end(function (err, res) {
                 var result = JSON.parse(res.text);
                 token = result.token;
@@ -76,7 +76,7 @@ describe('rental PUT', function () {
     before(function (done) {
         chai.request(server)
             .post('/api/v1/login')
-            .send({"username": "Mark", "password": "12345"})
+            .send({"username": "test", "password": "test"})
             .end(function (err, res) {
                 var result = JSON.parse(res.text);
                 token = result.token;
@@ -101,7 +101,7 @@ describe('delete rental', function() {
     before(function (done) {
         chai.request(server)
             .post("/api/v1/login")
-            .send({"username": "Mark", "password" : "12345"})
+            .send({"username": "test", "password" : "test"})
             .end(function (err, res) {
                 var result = JSON.parse(res.text);
                 token = result.token;

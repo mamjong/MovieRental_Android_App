@@ -23,7 +23,6 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -45,10 +44,11 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         editor = getSharedPreferences(PREFS_NAME_TOKEN, MODE_PRIVATE).edit();
-        editor.putString("IPLOCAL", "192.168.178.20:8080");
+        editor.putString("IPEMUL", "10.0.2.2:8080");
+        editor.putString("IPLOCAL", "10.0.2.2:8080");
         editor.putString("IPHEROKU", "tentamenmm.herokuapp.com");
         //1 = heroku 0 = local
-        editor.putInt("USEIP", 1);
+        editor.putInt("USEIP", 0);
         editor.commit();
 
 
@@ -81,7 +81,6 @@ public class LoginActivity extends AppCompatActivity {
                 "Signing in. Please wait...", true);
 
         SharedPreferences  sharedPreferences = getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
-
 
         String ipTemp = "";
 
@@ -120,6 +119,7 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putString("TOKEN", token);
                                 editor.commit();
 
+                                Log.i("TOKEN", token);
                                 Log.i("ID", id);
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -142,6 +142,7 @@ public class LoginActivity extends AppCompatActivity {
                         dialog.cancel();
                         Toast.makeText(getApplicationContext(), "connection failed", Toast.LENGTH_SHORT).show();
                         Log.e("TEMP", "Something went wrong");
+                        dialog.cancel();
                     }
                 }) {
 

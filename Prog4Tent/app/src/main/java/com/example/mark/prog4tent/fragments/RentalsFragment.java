@@ -1,12 +1,12 @@
 package com.example.mark.prog4tent.fragments;
 
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +24,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mark.prog4tent.DetailedRentalActivity;
-import com.example.mark.prog4tent.LoginActivity;
 import com.example.mark.prog4tent.R;
 import com.example.mark.prog4tent.adapter.RentalListAdapter;
 import com.example.mark.prog4tent.domain.Rental;
@@ -34,10 +33,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,59 +63,68 @@ public class RentalsFragment extends Fragment {
 
     public void volleyGetRentals() {
 
-        final ProgressDialog dialog = ProgressDialog.show(getContext(), "",
+        final ProgressDialog dialog = ProgressDialog.show(getActivity(), "",
                 "Signing in. Please wait...", true);
 
         final ArrayList<Rental> rentals = new ArrayList<>();
 
-                            SharedPreferences  sharedPreferences = this.getActivity().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
-                            String ipTemp = "";
 
-                            if (sharedPreferences.getInt("USEIP", 0) == 0) {
-                                ipTemp = sharedPreferences.getString("IPLOCAL", "no ip");
-                            }else if(sharedPreferences.getInt("USEIP", 0) == 1) {
-                                ipTemp = sharedPreferences.getString("IPHEROKU", "no ip");
+        SharedPreferences  sharedPreferences = this.getActivity().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
+        String ipTemp = "";
+
+        if (sharedPreferences.getInt("USEIP", 0) == 0) {
+            ipTemp = sharedPreferences.getString("IPLOCAL", "no ip");
+        }else if(sharedPreferences.getInt("USEIP", 0) == 1) {
+            ipTemp = sharedPreferences.getString("IPHEROKU", "no ip");
+        }
+
+
+        final String ipFinal = ipTemp;
+
+        final String id = sharedPreferences.getString("ID", "no id");
+        Log.i("ID RENT", id);
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+
+        ListView rentalListView = (ListView) getActivity().findViewById(R.id.rental_listView);
+        final ArrayAdapter rentalAdapter = new RentalListAdapter(getActivity(), 0, rentals);
+        rentalListView.setAdapter(rentalAdapter);
+        rentalAdapter.notifyDataSetChanged();
+
+        rentalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(getActivity(), DetailedRentalActivity.class);
+                i.putExtra("RENTAL", rentals.get(position));
+                startActivity(i);
+            }
+        });
+
+        rentalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(getActivity(), DetailedRentalActivity.class);
+                i.putExtra("RENTAL", rentals.get(position));
+                startActivity(i);
+            }
+        });
+
+        String url = "http://" + ipFinal + "/api/v1/rentals/" + id ;
+        Log.i("URL", url);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (!response.contains("error") && !response.isEmpty()){
+
+                            JSONArray jsonArray = new JSONArray();
+
+                            try {
+                                jsonArray = new JSONArray(response);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-
-
-                            final String ipFinal = ipTemp;
-
-                            final String id = sharedPreferences.getString("ID", "no id");
-                            Log.i("ID RENT", id);
-
-                            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-
-                            ListView rentalListView = (ListView) getActivity().findViewById(R.id.rental_listView);
-                            final ArrayAdapter rentalAdapter = new RentalListAdapter(getContext(), 0, rentals);
-                            rentalListView.setAdapter(rentalAdapter);
-                            rentalAdapter.notifyDataSetChanged();
-
-                            rentalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    Intent i = new Intent(getContext(), DetailedRentalActivity.class);
-                                    i.putExtra("RENTAL", rentals.get(position));
-                                    startActivity(i);
-                                }
-                            });
-
-
-                            String url = "http://" + ipFinal + "/api/v1/rentals/" + id ;
-                            Log.i("URL", url);
-
-                            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                                    new Response.Listener<String>() {
-                                        @Override
-                                        public void onResponse(String response) {
-                                            if (!response.contains("error") && !response.isEmpty()){
-
-                                                JSONArray jsonArray = new JSONArray();
-
-                                                try {
-                                                    jsonArray = new JSONArray(response);
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
-                                                }
 
                             for(int i = 0; i < jsonArray.length(); i++){
                                 try {
@@ -136,7 +142,7 @@ public class RentalsFragment extends Fragment {
 
                                     boolean isRented = jsonObject.isNull("return_date");
 
-                                    if(!isRented) {
+                                    if(isRented) {
                                         rentals.add(rental);
                                         rentalAdapter.notifyDataSetChanged();
                                     }
@@ -152,7 +158,7 @@ public class RentalsFragment extends Fragment {
                         } else {
                             Log.e("ERROR", "Response: " + response);
                             dialog.cancel();
-                            Toast.makeText(getContext(), "connection failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "connection failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -162,7 +168,7 @@ public class RentalsFragment extends Fragment {
                     public void onErrorResponse(VolleyError error) {
                         Log.e("TEMP", "Something went wrong");
                         dialog.cancel();
-                        Toast.makeText(getContext(), "connection failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "connection failed", Toast.LENGTH_SHORT).show();
                     }
                 }) {
 
