@@ -68,7 +68,13 @@ public class CopiesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         preferences = getActivity().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
-        ip = preferences.getString("IPEMUL", "NO IP");
+
+        if (preferences.getInt("USEIP", 0) == 0) {
+            ip = preferences.getString("IPLOCAL", "no ip");
+        }else if(preferences.getInt("USEIP", 0) == 1) {
+            ip = preferences.getString("IPHEROKU", "no ip");
+        }
+
         id = preferences.getString("ID", "NO ID");
         token = preferences.getString("TOKEN", "No token");
 

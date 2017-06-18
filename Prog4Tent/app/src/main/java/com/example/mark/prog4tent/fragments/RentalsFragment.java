@@ -142,7 +142,7 @@ public class RentalsFragment extends Fragment {
 
                                     boolean isRented = jsonObject.isNull("return_date");
 
-                                    if(!isRented) {
+                                    if(isRented) {
                                         rentals.add(rental);
                                         rentalAdapter.notifyDataSetChanged();
                                     }

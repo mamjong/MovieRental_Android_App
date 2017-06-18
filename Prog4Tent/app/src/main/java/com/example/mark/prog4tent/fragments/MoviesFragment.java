@@ -69,7 +69,13 @@ public class MoviesFragment extends Fragment {
         movieList.setAdapter(movieAdapter);
 
         preferences = getActivity().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
-        ip = preferences.getString("IPEMUL", "No IP");
+
+        if (preferences.getInt("USEIP", 0) == 0) {
+            ip = preferences.getString("IPLOCAL", "no ip");
+        }else if(preferences.getInt("USEIP", 0) == 1) {
+            ip = preferences.getString("IPHEROKU", "no ip");
+        }
+
         token = preferences.getString("TOKEN", "No token");
 
         movieList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

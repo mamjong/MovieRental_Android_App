@@ -45,10 +45,10 @@ public class LoginActivity extends AppCompatActivity {
 
         editor = getSharedPreferences(PREFS_NAME_TOKEN, MODE_PRIVATE).edit();
         editor.putString("IPEMUL", "10.0.2.2:8080");
-        editor.putString("IPLOCAL", "192.168.178.20:8080");
+        editor.putString("IPLOCAL", "10.0.2.2:8080");
         editor.putString("IPHEROKU", "tentamenmm.herokuapp.com");
         //1 = heroku 0 = local
-        editor.putInt("USEIP", 1);
+        editor.putInt("USEIP", 0);
         editor.commit();
 
 
