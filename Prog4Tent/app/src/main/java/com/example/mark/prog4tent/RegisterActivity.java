@@ -68,15 +68,22 @@ public class RegisterActivity extends AppCompatActivity {
     public void volleyRegister(String un, String pw){
 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
-        final String iplocal = sharedPreferences.getString("IPLOCAL", "no ip");
-        final String ipheroku = sharedPreferences.getString("IPHEROKU", "no ip");
+        String ipTemp = "";
 
+        if (sharedPreferences.getInt("USEIP", 0) == 0) {
+            ipTemp = sharedPreferences.getString("IPLOCAL", "no ip");
+        }else if(sharedPreferences.getInt("USEIP", 0) == 1) {
+            ipTemp = sharedPreferences.getString("IPHEROKU", "no ip");
+        }
+
+
+        final String ipFinal = ipTemp;
         final String username = un;
         final String password = pw;
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        String url = "http:/" + ipheroku + "/api/v1/register";
+        String url = "http:/" + ipFinal + "/api/v1/register";
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {

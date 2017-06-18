@@ -74,8 +74,17 @@ public class DetailedRentalActivity extends AppCompatActivity {
     public void volleyHandIn(String cutomerID, String invenrotyID, final Rental rental) {
 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
-        final String iplocal = sharedPreferences.getString("IPLOCAL", "no ip");
-        final String ipheroku = sharedPreferences.getString("IPHEROKU", "no ip");
+        String ipTemp = "";
+
+        if (sharedPreferences.getInt("USEIP", 0) == 0) {
+            ipTemp = sharedPreferences.getString("IPLOCAL", "no ip");
+        }else if(sharedPreferences.getInt("USEIP", 0) == 1) {
+            ipTemp = sharedPreferences.getString("IPHEROKU", "no ip");
+        }
+
+
+        final String ipFinal = ipTemp;
+
         final String token = sharedPreferences.getString("TOKEN", "no token");
 
         final String custID = cutomerID;
@@ -83,7 +92,7 @@ public class DetailedRentalActivity extends AppCompatActivity {
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        String url = "http://"+ ipheroku + "/api/v1/rentals?customerId=" + custID + "&inventoryId=" + invID;
+        String url = "http://"+ ipFinal + "/api/v1/rentals?customerId=" + custID + "&inventoryId=" + invID;
 
 
         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url,

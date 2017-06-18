@@ -72,8 +72,17 @@ public class RentalsFragment extends Fragment {
         final ArrayList<Rental> rentals = new ArrayList<>();
 
                             SharedPreferences  sharedPreferences = this.getActivity().getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
-                            final String iplocal = sharedPreferences.getString("IPLOCAL", "no ip");
-                            final String ipheroku = sharedPreferences.getString("IPHEROKU", "no ip");
+                            String ipTemp = "";
+
+                            if (sharedPreferences.getInt("USEIP", 0) == 0) {
+                                ipTemp = sharedPreferences.getString("IPLOCAL", "no ip");
+                            }else if(sharedPreferences.getInt("USEIP", 0) == 1) {
+                                ipTemp = sharedPreferences.getString("IPHEROKU", "no ip");
+                            }
+
+
+                            final String ipFinal = ipTemp;
+
                             final String id = sharedPreferences.getString("ID", "no id");
                             Log.i("ID RENT", id);
 
@@ -94,7 +103,7 @@ public class RentalsFragment extends Fragment {
                             });
 
 
-                            String url = "http://" + ipheroku + "/api/v1/rentals/" + id ;
+                            String url = "http://" + ipFinal + "/api/v1/rentals/" + id ;
                             Log.i("URL", url);
 
                             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -127,7 +136,7 @@ public class RentalsFragment extends Fragment {
 
                                     boolean isRented = jsonObject.isNull("return_date");
 
-                                    if(isRented) {
+                                    if(!isRented) {
                                         rentals.add(rental);
                                         rentalAdapter.notifyDataSetChanged();
                                     }

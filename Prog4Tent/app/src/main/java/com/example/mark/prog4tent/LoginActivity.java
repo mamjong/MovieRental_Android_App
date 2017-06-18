@@ -47,6 +47,8 @@ public class LoginActivity extends AppCompatActivity {
         editor = getSharedPreferences(PREFS_NAME_TOKEN, MODE_PRIVATE).edit();
         editor.putString("IPLOCAL", "192.168.178.20:8080");
         editor.putString("IPHEROKU", "tentamenmm.herokuapp.com");
+        //1 = heroku 0 = local
+        editor.putInt("USEIP", 1);
         editor.commit();
 
 
@@ -79,15 +81,24 @@ public class LoginActivity extends AppCompatActivity {
                 "Signing in. Please wait...", true);
 
         SharedPreferences  sharedPreferences = getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
-        final String iplocal = sharedPreferences.getString("IPLOCAL", "no ip");
-        final String ipheroku = sharedPreferences.getString("IPHEROKU", "no ip");
 
+
+        String ipTemp = "";
+
+        if (sharedPreferences.getInt("USEIP", 0) == 0) {
+            ipTemp = sharedPreferences.getString("IPLOCAL", "no ip");
+        }else if(sharedPreferences.getInt("USEIP", 0) == 1) {
+            ipTemp = sharedPreferences.getString("IPHEROKU", "no ip");
+        }
+
+
+        final String ipFinal = ipTemp;
         final String username = un;
         final String password = pw;
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-        String url = "http://"+ ipheroku + "/api/v1/login";
+        String url = "http://"+ ipFinal + "/api/v1/login";
 
         Log.i("URL", url);
 
