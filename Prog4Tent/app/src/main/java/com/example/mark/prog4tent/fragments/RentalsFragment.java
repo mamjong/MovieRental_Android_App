@@ -64,7 +64,7 @@ public class RentalsFragment extends Fragment {
     public void volleyGetRentals() {
 
         final ProgressDialog dialog = ProgressDialog.show(getActivity(), "",
-                "Signing in. Please wait...", true);
+                "Loading rentals. Please wait...", true);
 
         final ArrayList<Rental> rentals = new ArrayList<>();
 

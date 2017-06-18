@@ -1,6 +1,7 @@
 package com.example.mark.prog4tent.fragments;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -101,6 +102,9 @@ public class MoviesFragment extends Fragment {
 
     public void volleyMoviesRequest() {
 
+        final ProgressDialog dialog = ProgressDialog.show(getActivity(), "",
+                "Loading rentals. Please wait...", true);
+
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         String url = "http://" + ip + "/api/v1/films?offset=0&count=30";
 
@@ -119,8 +123,10 @@ public class MoviesFragment extends Fragment {
                                 movieArrayList.add(movie);
                                 movieAdapter.notifyDataSetChanged();
                             }
+                            dialog.cancel();
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            dialog.cancel();
                         }
                     }
                 },
@@ -129,6 +135,7 @@ public class MoviesFragment extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("ERROR", "Something went wrong");
+                        dialog.cancel();
                     }
                 }) {
 

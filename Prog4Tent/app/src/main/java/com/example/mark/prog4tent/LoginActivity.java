@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("IPLOCAL", "10.0.2.2:8080");
         editor.putString("IPHEROKU", "tentamenmm.herokuapp.com");
         //1 = heroku 0 = local
-        editor.putInt("USEIP", 0);
+        editor.putInt("USEIP", 1);
         editor.commit();
 
 
