@@ -1,5 +1,8 @@
 package com.example.mark.prog4tent.domain;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
@@ -16,13 +19,25 @@ public class Rental implements Serializable {
     String your_release;
     String title;
     String staffId;
+    String customerId;
+    private int mData;
 
-    public String getStaffId() {
-        return staffId;
-    }
 
-    public void setStaffId(String staffId) {
-        this.staffId = staffId;
+
+    @Override
+    public String toString() {
+        return "Rental{" +
+                "rental_id='" + rental_id + '\'' +
+                ", rental_date='" + rental_date + '\'' +
+                ", inventory_id='" + inventory_id + '\'' +
+                ", return_date='" + return_date + '\'' +
+                ", last_update='" + last_update + '\'' +
+                ", description='" + description + '\'' +
+                ", your_release='" + your_release + '\'' +
+                ", title='" + title + '\'' +
+                ", staffId='" + staffId + '\'' +
+                ", mData=" + mData +
+                '}';
     }
 
     public String getCustomerId() {
@@ -33,12 +48,11 @@ public class Rental implements Serializable {
         this.customerId = customerId;
     }
 
-    String customerId;
-
     public Rental() {
     }
 
     public String getRental_id() {
+
         return rental_id;
     }
 
@@ -102,17 +116,19 @@ public class Rental implements Serializable {
         this.title = title;
     }
 
-    @Override
-    public String toString() {
-        return "Rental{" +
-                "rental_id='" + rental_id + '\'' +
-                ", rental_date='" + rental_date + '\'' +
-                ", inventory_id='" + inventory_id + '\'' +
-                ", return_date='" + return_date + '\'' +
-                ", last_update='" + last_update + '\'' +
-                ", description='" + description + '\'' +
-                ", your_release='" + your_release + '\'' +
-                ", title='" + title + '\'' +
-                '}';
+    public String getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(String staffId) {
+        this.staffId = staffId;
+    }
+
+    public int getmData() {
+        return mData;
+    }
+
+    public void setmData(int mData) {
+        this.mData = mData;
     }
 }

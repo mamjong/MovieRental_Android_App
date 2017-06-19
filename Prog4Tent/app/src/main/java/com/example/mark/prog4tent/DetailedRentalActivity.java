@@ -1,5 +1,6 @@
 package com.example.mark.prog4tent;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,7 +40,15 @@ public class DetailedRentalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_rental);
 
-        final Rental rental = (Rental) getIntent().getExtras().getSerializable("RENTAL");
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+
+        Rental tempRental = new Rental();
+        if(bundle != null) {
+            tempRental = (Rental) bundle.getSerializable("RENTAL");
+        }
+
+        final Rental rental = tempRental;
 
         titleTextView = (TextView) findViewById(R.id.dra_title_tv);
         titleTextView.setText(rental.getTitle());
@@ -72,6 +81,9 @@ public class DetailedRentalActivity extends AppCompatActivity {
 
     }
     public void volleyHandIn(String cutomerID, String invenrotyID, final Rental rental) {
+
+        final ProgressDialog dialog = ProgressDialog.show(DetailedRentalActivity.this, "",
+                "Inleveren. Please wait...", true);
 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
 
@@ -106,7 +118,7 @@ public class DetailedRentalActivity extends AppCompatActivity {
                                 Log.i("ROWS", changedRows);
                                 if(changedRows.equals("1") || changedRows.equals("2")){
                                     Toast.makeText(getApplicationContext(), "succesvol ingeverd", Toast.LENGTH_SHORT).show();
-                                    Intent i = new Intent(getApplicationContext(), DetailedRentalActivity.class);
+                                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(i);
                                 }else{
                                     Toast.makeText(getApplicationContext(), "niet succesvol ingeverd", Toast.LENGTH_SHORT).show();
@@ -114,8 +126,12 @@ public class DetailedRentalActivity extends AppCompatActivity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+
+                            dialog.cancel();
                         } else {
                             Log.e("ERROR", "Response: " + response);
+                            dialog.cancel();
+                            Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -124,6 +140,8 @@ public class DetailedRentalActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("TEMP", "Something went wrong");
+                        dialog.cancel();
+                        Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
                     }
                 }) {
 
@@ -145,7 +163,7 @@ public class DetailedRentalActivity extends AppCompatActivity {
 
 
 
-                String mContent = "{\"RentalDate\":\"" + rental.getRental_date() + "\",\"ReturnDate\":\"" + now +  "\",\"staffId\":\"" + rental.getStaffId() +  "\"}";
+                String mContent = "{\"RentalDate\":\"" + rental.getRental_date() + "\",\"ReturnDate\":\"" + now +  "\",\"StaffId\":\"" + rental.getStaffId() +  "\"}";
                 byte[] body = new byte[0];
                 try {
                     body = mContent.getBytes("UTF-8");

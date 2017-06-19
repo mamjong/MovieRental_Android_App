@@ -100,15 +100,6 @@ public class RentalsFragment extends Fragment {
             }
         });
 
-        rentalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getActivity(), DetailedRentalActivity.class);
-                i.putExtra("RENTAL", rentals.get(position));
-                startActivity(i);
-            }
-        });
-
         String url = "http://" + ipFinal + "/api/v1/rentals/" + id ;
         Log.i("URL", url);
 
