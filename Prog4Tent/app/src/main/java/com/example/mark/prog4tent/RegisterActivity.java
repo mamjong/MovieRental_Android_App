@@ -65,12 +65,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
-        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(i);
-    }
-
     public void volleyRegister(String un, String pw){
 
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);

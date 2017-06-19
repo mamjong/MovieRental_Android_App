@@ -169,4 +169,8 @@ public class LoginActivity extends AppCompatActivity {
 
         requestQueue.add(stringRequest);
     }
+
+    @Override
+    public void onBackPressed() {
+    }
 }
