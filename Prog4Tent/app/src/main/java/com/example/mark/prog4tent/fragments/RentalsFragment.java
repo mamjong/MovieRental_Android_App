@@ -148,7 +148,7 @@ public class RentalsFragment extends Fragment {
                         } else {
                             Log.e("ERROR", "Response: " + response);
                             dialog.cancel();
-                            Toast.makeText(getActivity(), "connection failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Connection Failed", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -158,7 +158,7 @@ public class RentalsFragment extends Fragment {
                     public void onErrorResponse(VolleyError error) {
                         Log.e("TEMP", "Something went wrong");
                         dialog.cancel();
-                        Toast.makeText(getActivity(), "connection failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Connection Failed", Toast.LENGTH_SHORT).show();
                     }
                 }) {
 

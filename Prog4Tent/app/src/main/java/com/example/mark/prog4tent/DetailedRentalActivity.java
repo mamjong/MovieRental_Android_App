@@ -102,11 +102,11 @@ public class DetailedRentalActivity extends AppCompatActivity {
                                 String changedRows = jsonObject.getString("affectedRows");
                                 Log.i("ROWS", changedRows);
                                 if(changedRows.equals("1") || changedRows.equals("2")){
-                                    Toast.makeText(getApplicationContext(), "Successfully handed in.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Successfully handed in", Toast.LENGTH_SHORT).show();
                                     Intent i = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(i);
                                 }else{
-                                    Toast.makeText(getApplicationContext(), "Handing in failed.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Handing in failed", Toast.LENGTH_SHORT).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -116,7 +116,7 @@ public class DetailedRentalActivity extends AppCompatActivity {
                         } else {
                             Log.e("ERROR", "Response: " + response);
                             dialog.cancel();
-                            Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -126,7 +126,7 @@ public class DetailedRentalActivity extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         Log.e("TEMP", "Something went wrong");
                         dialog.cancel();
-                        Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
                     }
                 }) {
 

@@ -47,7 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if(confirmTextView.getText().toString().equals("") || confirmTextView.getText().toString().equals("") || confirmTextView.getText().toString().equals("")) {
-                    Toast.makeText(getApplicationContext(), "no fields can be empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 }else{
                     Log.i("TV CON", confirmTextView.getText().toString());
                     Log.i("TV PAS", passwordTextView.getText().toString());
@@ -56,13 +56,19 @@ public class RegisterActivity extends AppCompatActivity {
 
 
                     } else {
-                        Toast.makeText(getApplicationContext(), "password are not the same", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Passwords do not match", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
         });
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(i);
     }
 
     public void volleyRegister(String un, String pw){

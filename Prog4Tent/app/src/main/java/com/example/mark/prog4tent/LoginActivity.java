@@ -129,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(i);
                         } else {
                             dialog.cancel();
-                            Toast.makeText(getApplicationContext(), "Enter a valid username & password.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Enter a valid username & password", Toast.LENGTH_SHORT).show();
                             Log.e("ERROR", "Response: " + response);
                         }
                     }
