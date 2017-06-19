@@ -125,7 +125,6 @@ public class RentalsFragment extends Fragment {
                                     rental.setDescription(jsonObject.getString("description"));
                                     rental.setInventory_id(jsonObject.getString("inventory_id"));
                                     rental.setRental_date(jsonObject.getString("rental_date"));
-                                    rental.setReturn_date(jsonObject.getString("return_date"));
                                     rental.setYour_release(jsonObject.getString("release_year"));
                                     rental.setRental_id(jsonObject.getString("rental_id"));
                                     rental.setCustomerId(jsonObject.getString("customer_id"));

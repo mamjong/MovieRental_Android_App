@@ -53,9 +53,7 @@ public class DetailedRentalActivity extends AppCompatActivity {
         titleTextView = (TextView) findViewById(R.id.dra_title_tv);
         titleTextView.setText(rental.getTitle());
         rentalDateTextView = (TextView) findViewById(R.id.rental_date_tv);
-        rentalDateTextView.setText(rental.getReturn_date());
-        returnDateTextView = (TextView) findViewById(R.id.return_date_tv);
-        returnDateTextView.setText(rental.getReturn_date());
+        rentalDateTextView.setText(rental.getRental_date());
         descTextView = (TextView) findViewById(R.id.descr_tv);
         descTextView.setText(rental.getDescription());
 
@@ -66,19 +64,6 @@ public class DetailedRentalActivity extends AppCompatActivity {
                 volleyHandIn(rental.getCustomerId(), rental.getInventory_id(), rental);
             }
         });
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
     public void volleyHandIn(String cutomerID, String invenrotyID, final Rental rental) {
 
@@ -117,11 +102,11 @@ public class DetailedRentalActivity extends AppCompatActivity {
                                 String changedRows = jsonObject.getString("affectedRows");
                                 Log.i("ROWS", changedRows);
                                 if(changedRows.equals("1") || changedRows.equals("2")){
-                                    Toast.makeText(getApplicationContext(), "succesvol ingeverd", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Successfully handed in.", Toast.LENGTH_SHORT).show();
                                     Intent i = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(i);
                                 }else{
-                                    Toast.makeText(getApplicationContext(), "niet succesvol ingeverd", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Handing in failed.", Toast.LENGTH_SHORT).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -159,9 +144,6 @@ public class DetailedRentalActivity extends AppCompatActivity {
             public byte[] getBody() throws AuthFailureError {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-dd-MM hh:mm:ss");
                 String now = simpleDateFormat.format(new Date());
-
-
-
 
                 String mContent = "{\"RentalDate\":\"" + rental.getRental_date() + "\",\"ReturnDate\":\"" + now +  "\",\"StaffId\":\"" + rental.getStaffId() +  "\"}";
                 byte[] body = new byte[0];

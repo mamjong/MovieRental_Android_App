@@ -36,9 +36,6 @@ public class RentalListAdapter extends ArrayAdapter<Rental> {
             TextView rentalDateTextView = (TextView) convertview.findViewById(R.id.rental_rental_date_tv);
             rentalDateTextView.setText(rental.getRental_date());
 
-            TextView returnDateTextView = (TextView) convertview.findViewById(R.id.rental_return_date_tv);
-            returnDateTextView.setText(rental.getReturn_date());
-
             return convertview;
     }
 }

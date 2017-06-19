@@ -13,7 +13,6 @@ public class Rental implements Serializable {
     String rental_id;
     String rental_date;
     String inventory_id;
-    String return_date;
     String last_update;
     String description;
     String your_release;
@@ -30,7 +29,6 @@ public class Rental implements Serializable {
                 "rental_id='" + rental_id + '\'' +
                 ", rental_date='" + rental_date + '\'' +
                 ", inventory_id='" + inventory_id + '\'' +
-                ", return_date='" + return_date + '\'' +
                 ", last_update='" + last_update + '\'' +
                 ", description='" + description + '\'' +
                 ", your_release='" + your_release + '\'' +
@@ -65,7 +63,7 @@ public class Rental implements Serializable {
     }
 
     public void setRental_date(String rental_date) {
-        this.rental_date = rental_date;
+        this.rental_date = rental_date.substring(0, 10);
     }
 
     public String getInventory_id() {
@@ -74,14 +72,6 @@ public class Rental implements Serializable {
 
     public void setInventory_id(String inventory_id) {
         this.inventory_id = inventory_id;
-    }
-
-    public String getReturn_date() {
-        return return_date;
-    }
-
-    public void setReturn_date(String return_date) {
-        this.return_date = return_date;
     }
 
     public String getLast_update() {
