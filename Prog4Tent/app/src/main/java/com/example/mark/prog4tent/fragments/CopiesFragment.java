@@ -213,10 +213,11 @@ public class CopiesFragment extends Fragment {
                                 toast.show();
                             } else {
                                 copy.setRented(true);
+                                volleyCheckRented(copy);
                                 toast = Toast.makeText(getActivity(), "Copy rented!", Toast.LENGTH_SHORT);
                                 toast.show();
                             }
-                            copyAdapter.notifyDataSetChanged();
+                            //copyAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

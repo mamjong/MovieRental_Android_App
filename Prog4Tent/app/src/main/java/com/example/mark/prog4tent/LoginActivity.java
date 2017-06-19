@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("IPLOCAL", "145.49.21.149:8080");
         editor.putString("IPHEROKU", "tentamenmm.herokuapp.com");
         //1 = heroku 0 = local
-        editor.putInt("USEIP", 0);
+        editor.putInt("USEIP", 1);
         editor.commit();
 
 
@@ -70,7 +70,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 volleyLogin(usernameText.getText().toString(), passwordText.getText().toString());
-
             }
         });
     }
@@ -130,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(i);
                         } else {
                             dialog.cancel();
-                            Toast.makeText(getApplicationContext(), "connection failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Enter a valid username & password.", Toast.LENGTH_SHORT).show();
                             Log.e("ERROR", "Response: " + response);
                         }
                     }
@@ -140,7 +139,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         dialog.cancel();
-                        Toast.makeText(getApplicationContext(), "connection failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Connection Failed", Toast.LENGTH_SHORT).show();
                         Log.e("TEMP", "Something went wrong");
                         dialog.cancel();
                     }
