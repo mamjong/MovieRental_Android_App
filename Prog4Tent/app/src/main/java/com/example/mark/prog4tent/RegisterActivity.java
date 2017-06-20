@@ -1,5 +1,6 @@
 package com.example.mark.prog4tent;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -67,6 +68,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     public void volleyRegister(String un, String pw){
 
+        final ProgressDialog dialog = ProgressDialog.show(RegisterActivity.this, "",
+                "Registreren. Please wait...", true);
+
+
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME_TOKEN, Context.MODE_PRIVATE);
         String ipTemp = "";
 
@@ -89,6 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        dialog.cancel();
                         Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                         startActivity(i);
 
@@ -98,6 +104,8 @@ public class RegisterActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        dialog.cancel();
+                        Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
                         Log.e("TEMP", "Something went wrong");
                     }
                 }) {
